@@ -1,0 +1,31 @@
+<header>
+  <div class="about__article">
+    <p class="title article">{{article['title']}}</p>
+    <p class="subtitle time">Обновлено: {{article['updated_at']}}</p>
+    <div class="row">
+      <p class="subtitle">Рейтинг: </p>
+      <p class="subtitle rating">9/10 ⭐</p>
+    </div>
+  </div>
+
+  <div class="author__container">
+    <a class="author__card" routerLink="/user/{{article['author']}}">
+      <div class="left__side">
+        <p class="title">Автор: {{article['author']}}</p>
+        <div class="row">
+          <p class="subtitle">Рейтинг: </p>
+          <p class="subtitle rating">9/10 ⭐</p>
+        </div>
+        <div class="row">
+          <p class="subtitle">Статей: </p>
+          <p class="subtitle article__count">5</p>
+        </div>
+
+      </div>
+      <p class="user__status">Админ</p>
+    </a>
+  </div>
+</header>
+<hr>
+<p [innerHTML]="article_content" class="article__content">
+</p>

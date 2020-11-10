@@ -1,0 +1,15 @@
+<div class="content">
+  <p class="text">Статьи</p>
+  <!-- <div class="filter__row">
+    <ul class="filters">
+      <li class="filter__type">Рейтинг</li>
+      <li class="filter__type">Дата публикации</li>
+    </ul>
+    <button class="apply__filter__button" type="button" name="apply__filter">Применить</button>
+  </div> -->
+  <div class="article__container">
+    <app-post-preview *ngFor="let article of articles['articles_previews']"
+        [article]="article">
+      </app-post-preview>
+  </div>
+</div>

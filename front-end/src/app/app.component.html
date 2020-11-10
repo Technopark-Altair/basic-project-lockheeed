@@ -1,0 +1,25 @@
+<nav class="nav__bar">
+  <a class="logo__container" routerLink="">
+    <img class="logo__image" src="assets/hacker.svg" alt="">
+    <div class="logotext__container">
+      <h1 class=logo__text>cyber</h1>
+      <h1 class=logo__text>safe.ml</h1>
+    </div>
+  </a>
+  <div class="links_container">
+    <a class="link" routerLink="">Главная</a>
+    <a class="link" routerLink="/forum">Форум</a>
+    <a class="link" routerLink="/articles">Статьи</a>
+  </div>
+  <form class="search__form" action="search">
+    <input class="search__button" type="submit" value="">
+    <input class="search__input" type="text" name="request" value="">
+  </form>
+</nav>
+
+<div class="container">
+  <router-outlet></router-outlet>
+</div>
+
+<footer class="footer">
+</footer>

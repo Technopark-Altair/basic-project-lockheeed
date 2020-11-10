@@ -1,0 +1,49 @@
+.post__preview {
+  text-decoration: none;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.type {
+  margin: .5em;
+  padding: .3em;
+
+  font-size: .7rem;
+  background: #52e32e;
+  border: none;
+  border-radius: 5px;
+}
+
+p {
+  font-family: 'Rubik', sans-serif;
+  font-weight: 500;
+  color: white;
+}
+
+.title {
+  font-size: 1.7rem;
+  margin: 1.5vh;
+}
+
+.subtitle {
+  margin: .6vh 1.5vh;
+}
+
+.time {
+  margin-top: 0;
+  color: #28c95e;
+}
+
+@media (max-width: 840px) {
+  .title {
+    font-size: 1.3rem;
+    margin: 1.5vh;
+  }
+
+  .subtitle {
+    margin: .2vh 1.5vh;
+  }
+
+}
