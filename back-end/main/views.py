@@ -1,7 +1,10 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.utils import timezone
+from .core import *
+
 from .models import Article
+from .models import User
 
 # Create your views here.
 
@@ -27,19 +30,37 @@ def getArticle(request):
     response = {"article":{}}
 
     try:
-        slug = request.GET.get('slug', '')
-        print(slug)
+        slug = request.GET['slug']
         article = Article.objects.get(slug=slug)
     except Article.DoesNotExist:
         response = JsonResponse(response)
-        response["Access-Control-Allow-Origin"] = "*"
-        return response
-
-    response["article"]["title"] = article.title
-    response["article"]["author"] = article.author
-    response["article"]["updated_at"] = timezone.localtime(article.updated_at).strftime("%d-%m-%Y %H:%M")
-    response["article"]["content"] = article.content
+    else:
+        response["article"]["title"] = article.title
+        response["article"]["author"] = article.author
+        response["article"]["updated_at"] = timezone.localtime(article.updated_at).strftime("%d-%m-%Y %H:%M")
+        response["article"]["content"] = article.content
 
     response = JsonResponse(response)
     response["Access-Control-Allow-Origin"] = "*"
     return response
+
+def auth(request):
+    login = request.GET['login']
+    password = request.GET['password']
+
+    try:
+        user = User.objects.get(username=login)
+    except User.DoesNotExist:
+        response = {"status":"FAILED", "error":"Invalid login or password!"}
+    else:
+        if user.hash_pasword == password:
+            token = createSessionToken()
+            response = {"status":"OK", "session_token":token}
+        else:
+            response = {"status":"FAILED", "error":"Invalid login or password!"}
+
+    response = JsonResponse(response)
+    response["Access-Control-Allow-Origin"] = "*"
+    return response
+
+    # print(articles)

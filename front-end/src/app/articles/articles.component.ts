@@ -11,7 +11,7 @@ export class ArticlesComponent implements OnInit {
 
   getLastPosts() {
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', 'http://46.39.252.82:8000/db/get_last_posts/', false);
+    xhr.open('GET', 'http://46.39.252.82:8000/api/get_last_posts/', false);
     xhr.send();
     return JSON.parse(xhr.responseText);
   }

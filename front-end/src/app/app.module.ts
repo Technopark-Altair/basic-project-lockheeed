@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
 import { AppRoutingModule, routingComponents } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -10,6 +11,12 @@ import { ArticleComponent } from './article/article.component';
 import { NotfoundComponent } from './notfound/notfound.component';
 import { ArticlesComponent } from './articles/articles.component';
 import { SearchComponent } from './search/search.component';
+import { AuthComponent } from './auth/auth.component';
+import { RegComponent } from './reg/reg.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
+import {MatButtonModule} from '@angular/material/button';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
 // import { ForumComponent } from './forum/forum.component';
 
 @NgModule({
@@ -21,12 +28,18 @@ import { SearchComponent } from './search/search.component';
     ArticleComponent,
     NotfoundComponent,
     ArticlesComponent,
-    SearchComponent
+    SearchComponent,
+    AuthComponent,
+    RegComponent,
     // ForumComponent,
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    FormsModule,
+    MatButtonModule,
+    MatSnackBarModule
   ],
   providers: [],
   bootstrap: [AppComponent]

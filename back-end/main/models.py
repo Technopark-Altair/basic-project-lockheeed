@@ -2,8 +2,8 @@ from django.db import models
 import uuid
 
 class User(models.Model):
-    name = models.CharField(max_length=24, null=False, verbose_name="Имя", primary_key=True)
-    username = models.CharField(max_length=24, null=False, unique=True, verbose_name="Логин")
+    name = models.CharField(max_length=24, null=False, verbose_name="Имя")
+    username = models.CharField(max_length=24, null=False, unique=True, verbose_name="Логин", primary_key=True)
     email = models.EmailField(max_length=256, unique=True, null=False, default="", verbose_name="Почта")
     raiting = models.IntegerField(default=0)
     id = models.UUIDField(default=uuid.uuid4, editable=False, verbose_name="UUID")

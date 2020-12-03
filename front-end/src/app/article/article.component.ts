@@ -17,7 +17,7 @@ export class ArticleComponent implements OnInit {
 
   getArticle(slug) {
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', 'http://46.39.252.82:8000/db/get_article/?slug=' + slug , false);
+    xhr.open('GET', 'http://46.39.252.82:8000/api/get_article/?slug=' + slug , false);
     xhr.send();
     let article = JSON.parse(xhr.responseText)['article'];
     return article;

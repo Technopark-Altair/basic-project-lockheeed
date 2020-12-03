@@ -21,3 +21,8 @@ h5,
 h6 {
   margin: 0;
 }
+
+.error.mat-snack-bar-container {
+  background: red;
+  color: white;
+}
