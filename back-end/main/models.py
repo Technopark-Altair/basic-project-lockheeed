@@ -5,6 +5,7 @@ class User(models.Model):
     name = models.CharField(max_length=24, null=False, verbose_name="Имя")
     username = models.CharField(max_length=24, null=False, unique=True, verbose_name="Логин", primary_key=True)
     email = models.EmailField(max_length=256, unique=True, null=False, default="", verbose_name="Почта")
+    avatar = models.ImageField(upload_to="avatars/")
     raiting = models.IntegerField(default=0)
     id = models.UUIDField(default=uuid.uuid4, editable=False, verbose_name="UUID")
     hash_pasword = models.CharField(max_length=32, null=False, verbose_name="Hash пароль")

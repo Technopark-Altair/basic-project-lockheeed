@@ -83,20 +83,22 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  margin: 0 3vw;
+  margin: 0 6vw;
 }
 
 .account__logo {
-  width: 8vh;
+  width: 9vh;
+  height: 9vh;
+  border-radius: 50%;
 }
 
 .search__form {
-  min-width: 200px;
-
   background: #605c64;
   color: white;
 
+  min-width: 230px;
   width: 20vw;
+
   height: 4vh;
 
   border: none;
@@ -155,7 +157,7 @@
   background: linear-gradient(129deg, rgba(4,30,31,1) 0%, rgba(23,51,51,1) 44%, rgba(47,66,65,1) 100%); */
 }
 
-@media (max-width: 1000px) {
+@media (max-width: 1050px) {
   .link {
     font-size: 1rem;
   }
@@ -171,5 +173,11 @@
   .container {
     margin-top: 30vh;
     min-height: 70vh;
+  }
+}
+
+@media (max-width: 920px) {
+  .nav__bar {
+    height: 35vh;
   }
 }

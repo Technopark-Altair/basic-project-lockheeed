@@ -1,1 +1,16 @@
-<p>reg works!</p>
+<div class="content">
+  <div class="auth__form">
+    <p class="label">Регистрация</p>
+    <div class="input__form">
+      <input type="text" name="" [(ngModel)]="login" placeholder="Логин">
+      <input type="email" name="" [(ngModel)]="email" placeholder="Почта">
+      <input type="text" name="" [(ngModel)]="name" placeholder="Имя">
+      <input type="password" name="" [(ngModel)]="password" placeholder="Пароль">
+      <input type="file" #Image accept="Image/*" (change)="handleInputFile($event.target.files)">
+    </div>
+    <div class="form__bottom">
+      <button (click)="registration()" mat-raised-button class="submit__button" >Регистрация</button>
+      <a routerLink="/autharization">Авторизация</a>
+    </div>
+  </div>
+</div>

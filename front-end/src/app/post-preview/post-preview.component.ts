@@ -7,5 +7,5 @@ import { Component, OnInit, Input } from '@angular/core';
 })
 
 export class PostPreviewComponent {
-  @Input('article') article: JSON; // tslint:disable-line: no-input-rename
+  @Input('article') article: JSON;
 }

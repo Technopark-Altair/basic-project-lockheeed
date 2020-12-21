@@ -6,7 +6,8 @@
       <input type="password" name="" [(ngModel)]="password" placeholder="Пароль">
     </div>
     <div class="form__bottom">
-      <button (click)="auth()" mat-raised-button class="submit__button" >Авторизация</button>
+      <button (click)=auth() mat-raised-button class="submit__button" >Авторизация</button>
+      <a routerLink="/registration">Регистрация</a>
     </div>
   </div>
 </div>
