@@ -1,19 +1,19 @@
-.content {
-  min-height: 85vh;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.label {
-  color: white;
-  font-size: 4rem;
+.text {
+  font-family: 'Roboto Mono', monospace;
   font-weight: 500;
+  font-size: 2.3rem;
+  color: white;
+
+  margin: 0;
+  margin-top: 1.5vh;
 }
 
-@media (max-width: 840px) {
-  .label {
-    font-size: 2.2rem;
-  }
+.text::after {
+  position: relative;
+  display: block;
+  content: "";
+  margin-top: 3px;
+
+  height: 2px;
+  background: white;
 }

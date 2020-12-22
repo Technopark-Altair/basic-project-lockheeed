@@ -23,8 +23,6 @@ export class ArticleComponent implements OnInit {
     return article;
   }
 
-
-
   // constructor(private ) { }
 
   constructor(private activateRoute: ActivatedRoute, router: Router, sanitizer:DomSanitizer){

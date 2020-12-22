@@ -115,7 +115,6 @@ def registration(request):
 def getProfileAvatar(request):
     try:
         login = getLoginByToken(request.GET['token'])
-
         try:
             image = open(settings.MEDIA_ROOT + f"\\avatars\\{login}.png", "rb").read()
         except FileNotFoundError:
@@ -123,6 +122,35 @@ def getProfileAvatar(request):
         else:
             image = b'data:image/png;base64,' + base64.b64encode(image)
             response = {"status":"OK", "image":image.decode("utf-8")}
+
+    except KeyError:
+        response = {"status":"FAILED", "error":"Неверный токен!"}
+
+    response = JsonResponse(response)
+    response["Access-Control-Allow-Origin"] = "*"
+    return response
+
+def getProfileInfo(request):
+    try:
+        login = getLoginByToken(request.GET['token'])
+        profile = User.objects.get(username=login)
+
+        try:
+            image = open(settings.MEDIA_ROOT + f"\\avatars\\{login}.png", "rb").read()
+        except FileNotFoundError:
+            image = ''
+        else:
+            image = b'data:image/png;base64,' + base64.b64encode(image)
+
+        response = {"status":"OK", "data":{
+            "username":profile.username,
+            "name":profile.name,
+            "email":profile.email,
+            "registered_at":profile.registered_at,
+            "raiting":profile.raiting,
+            "banned":profile.banned,
+            "avatar":image.decode("utf-8")
+        }}
 
     except KeyError:
         response = {"status":"FAILED", "error":"Неверный токен!"}

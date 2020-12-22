@@ -1,16 +1,40 @@
 <div class="content">
   <div class="auth__form">
     <p class="label">Регистрация</p>
-    <div class="input__form">
-      <input type="text" name="" [(ngModel)]="login" placeholder="Логин">
-      <input type="email" name="" [(ngModel)]="email" placeholder="Почта">
-      <input type="text" name="" [(ngModel)]="name" placeholder="Имя">
-      <input type="password" name="" [(ngModel)]="password" placeholder="Пароль">
-      <input type="file" #Image accept="Image/*" (change)="handleInputFile($event.target.files)">
+    <hr>
+
+    <div class="input__form ">
+      <div class="twin__input">
+        <div class="line">
+          <label>*Логин</label>
+          <input class="twin input__line" type="text" name="" [(ngModel)]="login" placeholder="">
+        </div>
+
+        <div class="line">
+          <label>*Имя</label>
+          <input class="twin input__line" type="text" name="" [(ngModel)]="name" placeholder="">
+        </div>
+      </div>
+
+      <div class="line">
+        <label>*Почта</label>
+        <input class="input__line" type="email" name="" [(ngModel)]="email" placeholder="example@mail.com">
+      </div>
+
+      <div class="line">
+        <label>*Пароль</label>
+        <input class="input__line" type="password" name="" [(ngModel)]="password" placeholder="">
+      </div>
+
+      <div class="line">
+          <label>Аватарка (.png формат)</label>
+          <input class="input__file" type="file" #Image accept="Image/*" (change)="handleInputFile($event.target.files)">
+      </div>
     </div>
+
     <div class="form__bottom">
       <button (click)="registration()" mat-raised-button class="submit__button" >Регистрация</button>
-      <a routerLink="/autharization">Авторизация</a>
+      <a class="link" routerLink="/autharization">Авторизация</a>
     </div>
   </div>
 </div>

@@ -17,6 +17,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import {MatButtonModule} from '@angular/material/button';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {MatInputModule} from '@angular/material/input';
+import { AccountComponent } from './account/account.component';
 // import { ForumComponent } from './forum/forum.component';
 
 @NgModule({
@@ -31,6 +33,7 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
     SearchComponent,
     AuthComponent,
     RegComponent,
+    AccountComponent,
     // ForumComponent,
   ],
   imports: [
@@ -39,7 +42,8 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
     BrowserAnimationsModule,
     FormsModule,
     MatButtonModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatInputModule
   ],
   providers: [],
   bootstrap: [AppComponent]

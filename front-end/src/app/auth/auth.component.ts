@@ -3,7 +3,6 @@ import { Md5 } from 'ts-md5';
 
 import { MatSnackBar } from '@angular/material/snack-bar';
 
-
 @Component({
   selector: 'app-auth',
   templateUrl: './auth.component.html',
@@ -14,15 +13,15 @@ export class AuthComponent implements OnInit {
 
   constructor(private snackBar: MatSnackBar) { }
 
-  spawnErrorSnackBar() {
-    this.snackBar.open("Неверный логин или пароль!", "", {
+  spawnErrorSnackBar(error_text, panel_class) {
+    this.snackBar.open(error_text, "", {
       duration: 3000,
       horizontalPosition: 'right',
-      panelClass: 'error'
+      panelClass: panel_class
     });
   }
 
-  auth() {
+  autharization() {
     var xhr = new XMLHttpRequest();
     xhr.open('POST', 'http://46.39.252.82:8000/api/auth/?login=' + this.login + '&password=' + Md5.hashStr(JSON.stringify(this.password)), false);
     xhr.send();
@@ -30,8 +29,9 @@ export class AuthComponent implements OnInit {
 
     if ( result['status'] == 'OK' ) {
       localStorage.setItem('session_token', result['session_token']);
+      window.open(window.location.origin, "_self");
     } else {
-      this.spawnErrorSnackBar();
+      this.spawnErrorSnackBar(result['error'], 'error');
     }
   }
 

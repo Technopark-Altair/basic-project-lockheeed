@@ -8,5 +8,6 @@ urlpatterns = [
     path('get_article/', getArticle),
     path('auth/', csrf_exempt(autharization)),
     path('reg/', csrf_exempt(registration)),
-    path('get_profile_picture/', getProfileAvatar)
+    path('get_profile_picture/', getProfileAvatar),
+    path('get_profile/', getProfileInfo)
 ]

@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { Md5 } from 'ts-md5';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import * as EmailValidator from 'email-validator';
 import { Router } from '@angular/router';
+
+import { Md5 } from 'ts-md5';
+import * as EmailValidator from 'email-validator';
 
 @Component({
   selector: 'app-reg',
@@ -20,11 +21,11 @@ export class RegComponent implements OnInit {
 
   base64Image: string;
 
-  spawnErrorSnackBar(error_text) {
+  spawnErrorSnackBar(error_text, panel_class) {
     this.snackBar.open(error_text, "", {
       duration: 3000,
       horizontalPosition: 'right',
-      panelClass: 'error'
+      panelClass: panel_class
     });
   }
 
@@ -40,9 +41,9 @@ export class RegComponent implements OnInit {
    }
 
   checkInputData() {
-    if ( !EmailValidator.validate(this.email) ) { this.spawnErrorSnackBar("Неверная почта!"); return false; };
-    if ( this.password.length <= 7 ) { this.spawnErrorSnackBar("Длинна пароля должна быть от 8 символов!"); return false; }
-    if ( this.login.length <= 1 ) { this.spawnErrorSnackBar("Длинна логина должна составлять от 2 символов!"); return false; }
+    if ( !EmailValidator.validate(this.email) ) { this.spawnErrorSnackBar("Неверный почтовый формат!", 'error'); return false; };
+    if ( this.password.length <= 7 ) { this.spawnErrorSnackBar("Длинна пароля должна быть от 8 символов!", 'error'); return false; }
+    if ( this.login.length <= 1 ) { this.spawnErrorSnackBar("Длинна логина должна составлять от 2 символов!", 'error'); return false; }
     return true;
   }
 
@@ -60,9 +61,8 @@ export class RegComponent implements OnInit {
       if ( result['status'] == 'OK' ) {
         localStorage.setItem('session_token', result['session_token']);
         window.open(window.location.origin, "_self");
-
       } else {
-        this.spawnErrorSnackBar( result['error'] );
+        this.spawnErrorSnackBar(result['error'], 'error');
       }
     }
   }

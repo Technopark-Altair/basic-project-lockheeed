@@ -26,3 +26,8 @@ h6 {
   background: red;
   color: white;
 }
+
+.valid.mat-snack-bar-container {
+  background: #adc400;
+  color: white;
+}

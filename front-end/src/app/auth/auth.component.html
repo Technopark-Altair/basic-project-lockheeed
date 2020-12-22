@@ -1,13 +1,22 @@
 <div class="content">
   <div class="auth__form">
     <p class="label">Авторизация</p>
+    <hr>
     <div class="input__form">
-      <input type="text" name="" [(ngModel)]="login" placeholder="Логин">
-      <input type="password" name="" [(ngModel)]="password" placeholder="Пароль">
+      <div class="line">
+        <label>*Логин</label>
+        <input class="input__line" type="text" name="" [(ngModel)]="login" placeholder="">
+      </div>
+
+      <div class="line">
+        <label>*Пароль</label>
+        <input class="input__line" type="password" name="" [(ngModel)]="password" placeholder="">
+      </div>
     </div>
+
     <div class="form__bottom">
-      <button (click)=auth() mat-raised-button class="submit__button" >Авторизация</button>
-      <a routerLink="/registration">Регистрация</a>
+      <button (click)="autharization()" mat-raised-button class="submit__button" >Авторизация</button>
+      <a class="link" routerLink="/registration">Регистрация</a>
     </div>
   </div>
 </div>
