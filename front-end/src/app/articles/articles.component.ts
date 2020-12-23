@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
+import { RequestsService } from 'src/app/requests.service'
+
 @Component({
   selector: 'app-articles',
   templateUrl: './articles.component.html',
@@ -7,17 +9,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ArticlesComponent implements OnInit {
 
-  constructor() { }
+  constructor(private requests: RequestsService) { }
 
-  getLastPosts() {
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', 'http://46.39.252.82:8000/api/get_last_posts/', false);
-    xhr.send();
-    return JSON.parse(xhr.responseText);
-  }
-
-  // title = 'example';
-  articles = this.getLastPosts();
+  articles = JSON.parse( this.requests.getLastPosts() );
 
   ngOnInit(): void {
 

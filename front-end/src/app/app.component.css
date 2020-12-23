@@ -92,6 +92,15 @@
   border-radius: 50%;
 }
 
+.online__mark {
+  display: block;
+  width: 17px;
+  height: 17px;
+
+  transform: translate(-20px, 24px);
+
+}
+
 .search__form {
   background: #605c64;
   color: white;

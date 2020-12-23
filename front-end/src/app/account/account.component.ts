@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-
 import { MatSnackBar } from '@angular/material/snack-bar';
+
+import { RequestsService } from 'src/app/requests.service'
 
 @Component({
   selector: 'app-account',
@@ -10,7 +11,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class AccountComponent implements OnInit {
 
-  constructor(private snackBar: MatSnackBar, private router: Router) { }
+  constructor(private snackBar: MatSnackBar, private router: Router, private requests: RequestsService) { }
 
   session_token: string = localStorage.getItem('session_token');
   data: any = {};
@@ -27,24 +28,21 @@ export class AccountComponent implements OnInit {
 
   getProfileInfo() {
       if (this.session_token) {
-        var xhr = new XMLHttpRequest();
-        let slug = 'http://46.39.252.82:8000/api/get_profile/?'
-        let params = 'token=' + this.session_token
-
-        xhr.open('GET', slug + params, false);
-        xhr.send();
-        let result = JSON.parse(xhr.responseText);
+        let result = JSON.parse( this.requests.getProfileInfo(this.session_token) );
 
         if ( result['status'] == 'OK' ) {
           this.data = result['data'];
           this.email = this.data['email'];
-        } else {
-          this.router.navigate(["/"]);
+          return undefined;
         }
-
-      } else {
-        this.router.navigate(["/"]);
       }
+
+      this.router.navigate(["/"]);
+  }
+
+  exit() {
+    localStorage.removeItem("session_token");
+    window.open(window.location.origin, "_self");
   }
 
   ngOnInit() {

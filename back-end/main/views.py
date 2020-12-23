@@ -140,7 +140,7 @@ def getProfileInfo(request):
         except FileNotFoundError:
             image = ''
         else:
-            image = b'data:image/png;base64,' + base64.b64encode(image)
+            image = (b'data:image/png;base64,' + base64.b64encode(image)).decode("utf-8")
 
         response = {"status":"OK", "data":{
             "username":profile.username,
@@ -149,7 +149,7 @@ def getProfileInfo(request):
             "registered_at":profile.registered_at,
             "raiting":profile.raiting,
             "banned":profile.banned,
-            "avatar":image.decode("utf-8")
+            "avatar":image
         }}
 
     except KeyError:

@@ -13,6 +13,7 @@
   </div>
   <a class="account__form" routerLink={{user_picture_url}}>
     <img class="account__logo" src={{user_picture}} alt="Авторизация">
+    <img *ngIf="online" class="online__mark" src="assets/online.svg" alt="">
   </a>
   <form class="search__form" action="search">
     <input class="search__button" type="submit" value="">

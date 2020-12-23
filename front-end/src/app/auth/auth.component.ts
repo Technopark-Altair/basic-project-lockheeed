@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { Md5 } from 'ts-md5';
-
 import { MatSnackBar } from '@angular/material/snack-bar';
+
+import { RequestsService } from 'src/app/requests.service'
 
 @Component({
   selector: 'app-auth',
@@ -11,9 +11,12 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 
 export class AuthComponent implements OnInit {
 
-  constructor(private snackBar: MatSnackBar) { }
+  constructor(private snackBar: MatSnackBar, private requests: RequestsService) { }
 
-  spawnErrorSnackBar(error_text, panel_class) {
+  login: string = "";
+  password: string = "";
+
+  spawnErrorSnackBar(error_text, panel_class = 'error') {
     this.snackBar.open(error_text, "", {
       duration: 3000,
       horizontalPosition: 'right',
@@ -21,22 +24,24 @@ export class AuthComponent implements OnInit {
     });
   }
 
-  autharization() {
-    var xhr = new XMLHttpRequest();
-    xhr.open('POST', 'http://46.39.252.82:8000/api/auth/?login=' + this.login + '&password=' + Md5.hashStr(JSON.stringify(this.password)), false);
-    xhr.send();
-    let result = JSON.parse(xhr.responseText);
-
-    if ( result['status'] == 'OK' ) {
-      localStorage.setItem('session_token', result['session_token']);
-      window.open(window.location.origin, "_self");
-    } else {
-      this.spawnErrorSnackBar(result['error'], 'error');
-    }
+  checkInputData() {
+    if ( this.login.length <= 1 ) { this.spawnErrorSnackBar("Длинна логина должна составлять от 2 символов!"); return false; }
+    if ( this.password.length <= 7 ) { this.spawnErrorSnackBar("Длинна пароля должна быть от 8 символов!"); return false; }
+    return true;
   }
 
-  login: string;
-  password: string;
+  autharization() {
+    if ( this.checkInputData() ){
+      let result = JSON.parse( this.requests.autharization(this.login, this.password) );
+
+      if ( result['status'] == 'OK' ) {
+        localStorage.setItem('session_token', result['session_token']);
+        window.open(window.location.origin, "_self");
+      } else {
+        this.spawnErrorSnackBar(result['error'], 'error');
+      }
+    }
+  }
 
   ngOnInit(): void {
   }

@@ -11,9 +11,10 @@ export class AppComponent {
 
   constructor(private snackBar: MatSnackBar) { }
 
-  user_picture: string = "";
+  user_picture: string = "assets/person.svg";
   user_picture_url: string = "/autharization";
   session_token: string = localStorage.getItem('session_token');
+  online: boolean = false;
 
   spawnErrorSnackBar(error_text, panel_class) {
     this.snackBar.open(error_text, "", {
@@ -37,17 +38,12 @@ export class AppComponent {
           this.spawnErrorSnackBar( "Успешная авторизация!", 'valid');
           if ( result['image'] ) {
             this.user_picture = result['image'];
-          } else {
-            this.user_picture = "assets/person.svg";
           }
+          this.online = true;
           this.user_picture_url = "/account";
         }
-
-      } else {
-        this.user_picture = "assets/person.svg";
       }
   }
-
   ngOnInit() {
     this.getProfilePicture();
   }

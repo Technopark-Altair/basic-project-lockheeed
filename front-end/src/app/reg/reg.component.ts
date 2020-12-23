@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 
-import { Md5 } from 'ts-md5';
+import { RequestsService } from 'src/app/requests.service'
+
 import * as EmailValidator from 'email-validator';
 
 @Component({
@@ -12,7 +13,7 @@ import * as EmailValidator from 'email-validator';
 })
 export class RegComponent implements OnInit {
 
-  constructor(private snackBar: MatSnackBar, private router: Router) { }
+  constructor(private snackBar: MatSnackBar, private router: Router, private requests: RequestsService) { }
 
   login: string = "";
   password: string = "";
@@ -21,7 +22,7 @@ export class RegComponent implements OnInit {
 
   base64Image: string;
 
-  spawnErrorSnackBar(error_text, panel_class) {
+  spawnErrorSnackBar(error_text, panel_class = 'error') {
     this.snackBar.open(error_text, "", {
       duration: 3000,
       horizontalPosition: 'right',
@@ -41,28 +42,22 @@ export class RegComponent implements OnInit {
    }
 
   checkInputData() {
-    if ( !EmailValidator.validate(this.email) ) { this.spawnErrorSnackBar("Неверный почтовый формат!", 'error'); return false; };
-    if ( this.password.length <= 7 ) { this.spawnErrorSnackBar("Длинна пароля должна быть от 8 символов!", 'error'); return false; }
-    if ( this.login.length <= 1 ) { this.spawnErrorSnackBar("Длинна логина должна составлять от 2 символов!", 'error'); return false; }
+    if ( !EmailValidator.validate(this.email) ) { this.spawnErrorSnackBar("Неверный почтовый формат!"); return false; };
+    if ( this.password.length <= 7 ) { this.spawnErrorSnackBar("Длинна пароля должна быть от 8 символов!"); return false; }
+    if ( this.login.length <= 1 ) { this.spawnErrorSnackBar("Длинна логина должна составлять от 2 символов!"); return false; }
     return true;
   }
 
   registration() {
     if ( this.checkInputData() ) {
-      var xhr = new XMLHttpRequest();
-      let slug = 'http://46.39.252.82:8000/api/reg/?'
-      let params = 'login=' + this.login + '&email=' + this.email + '&name=' + this.name + '&password=' + Md5.hashStr(JSON.stringify(this.password))
 
-      xhr.open('POST', slug + params, false);
-      xhr.send(this.base64Image);
-      console.log(xhr.responseText);
-      let result = JSON.parse(xhr.responseText);
+      let result = JSON.parse( this.requests.registration(this.login, this.email, this.name, this.password, this.base64Image) );
 
       if ( result['status'] == 'OK' ) {
         localStorage.setItem('session_token', result['session_token']);
         window.open(window.location.origin, "_self");
       } else {
-        this.spawnErrorSnackBar(result['error'], 'error');
+        this.spawnErrorSnackBar(result['error']);
       }
     }
   }
