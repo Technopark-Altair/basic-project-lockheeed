@@ -8,7 +8,7 @@ export class RequestsService {
 
   constructor() { }
 
-  api_url: string = "http://localhost:8000/api/";
+  api_url: string = "http://46.39.252.82:8000/api/";
 
   makeRequest(method, slug, params = undefined, payload = undefined) {
     var xhr = new XMLHttpRequest();
@@ -21,22 +21,26 @@ export class RequestsService {
     return xhr.responseText;
   }
 
-  getArticle(slug) {
-    let params = 'slug=' + slug
-    return this.makeRequest('GET', 'get_article/', params);
+  getTop() {
+    return this.makeRequest('GET', 'get_top/');
   }
 
   getLastArticles() {
     return this.makeRequest('GET', 'get_last_articles/');
   }
 
+  getLastPosts() {
+    return this.makeRequest('GET', 'get_last_posts/');
+  }
+
+  getArticle(slug) {
+    let params = 'slug=' + slug
+    return this.makeRequest('GET', 'get_article/', params);
+  }
+
   getPost(slug) {
     let params = 'slug=' + slug
     return this.makeRequest('GET', 'get_post/', params);
-  }
-
-  getLastPosts() {
-    return this.makeRequest('GET', 'get_last_posts/');
   }
 
   registration(login, email, name, password, base64Image) {
@@ -55,7 +59,7 @@ export class RequestsService {
   }
 
   getProfilePicture(session_token) {
-    let params = 'token=' + session_token; 
+    let params = 'token=' + session_token;
     return this.makeRequest('GET', 'get_profile_picture/', params);
   }
 

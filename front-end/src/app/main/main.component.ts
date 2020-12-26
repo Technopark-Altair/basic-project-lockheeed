@@ -11,7 +11,7 @@ export class MainComponent implements OnInit {
 
   constructor(private requests: RequestsService) { }
 
-  articles = JSON.parse( this.requests.getLastArticles() );
+  articles = JSON.parse( this.requests.getTop() );
 
   ngOnInit(): void {
   }

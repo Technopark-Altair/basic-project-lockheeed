@@ -1,11 +1,25 @@
 <header>
   <div class="about__article">
     <p class="title article">{{article['title']}}</p>
-    <p class="subtitle time">Обновлено: {{article['updated_at']}}</p>
-    <div class="row">
-      <p class="subtitle">Рейтинг: </p>
-      <p class="subtitle rating">9/10 ⭐</p>
+    <p class="time">Обновлено: {{article['updated_at']}}</p>
+
+    <div *ngIf="article['raiting'] > 0" class="row">
+      <p class="subtitle" >Рейтинг: </p>
+      <p class="raiting" style="color:#51df00;">{{article['raiting']}}</p>
+      <img class="arrow" src="assets/green_arrow.svg" alt="">
     </div>
+
+    <div *ngIf="article['raiting'] == 0" class="row">
+      <p class="subtitle" >Рейтинг: </p>
+      <p class="raiting" style="color:#b5b5b5;">{{article['raiting']}}</p>
+    </div>
+
+    <div *ngIf="article['raiting'] < 0" class="row">
+      <p class="subtitle" >Рейтинг: </p>
+      <p class="raiting" style="color:#e65e19;">{{article['raiting'] * -1}}</p>
+      <img class="arrow" src="assets/red_arrow.svg" alt="">
+    </div>
+
   </div>
 
   <div class="author__container">
@@ -13,8 +27,8 @@
       <div class="left__side">
         <p class="title">Автор: {{article['author']}}</p>
         <div class="row">
-          <p class="subtitle">Рейтинг: </p>
-          <p class="subtitle rating">9/10 ⭐</p>
+          <!-- <p class="subtitle">Рейтинг: </p>
+          <p class="subtitle rating">9/10 ⭐</p> -->
         </div>
         <div class="row">
           <p class="subtitle">Статей: </p>
@@ -26,6 +40,7 @@
     </a>
   </div>
 </header>
+
 <hr>
 <p [innerHTML]="article_content" class="article__content">
 </p>

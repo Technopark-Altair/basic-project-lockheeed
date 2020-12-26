@@ -12,6 +12,21 @@
   height: 100%;
 }
 
+.row {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.left__side {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  justify-content: space-between;
+}
+
 .type {
   margin: .5em;
   padding: .3em;
@@ -28,6 +43,11 @@ p {
   color: white;
 }
 
+.arrow {
+  height: 16px;
+  width: 16px;
+}
+
 .title {
   font-size: 1.7rem;
   margin: 1.5vh;
@@ -35,6 +55,10 @@ p {
 
 .subtitle {
   margin: .6vh 1.5vh;
+}
+
+.raiting {
+  margin: .6vh .5vh;
 }
 
 .time {

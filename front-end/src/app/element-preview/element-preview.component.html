@@ -1,9 +1,30 @@
 <a class="article__preview" routerLink="/{{element['type']}}/{{element['slug']}}">
   <div class="left__side">
     <p class="title">{{element['title']}}</p>
-    <p class="subtitle">Автор: {{element['author']}}</p>
-    <p class="subtitle time">Обновлено: {{element['updated_at']}}</p>
+
+    <div>
+      <div *ngIf="element['raiting'] > 0" class="row">
+        <p class="subtitle">Рейтинг: </p>
+        <p class="raiting" style="color:#51df00;">{{element['raiting']}}</p>
+        <img class="arrow" src="assets/green_arrow.svg" alt="">
+      </div>
+
+      <div *ngIf="element['raiting'] == 0" class="row">
+        <p class="subtitle">Рейтинг: </p>
+        <p class="raiting" style="color:#b5b5b5;">{{element['raiting']}}</p>
+      </div>
+
+      <div *ngIf="element['raiting'] < 0" class="row">
+        <p class="subtitle">Рейтинг: </p>
+        <p class="raiting" style="color:#e65e19;">{{element['raiting'] * -1}}</p>
+        <img class="arrow" src="assets/red_arrow.svg" alt="">
+      </div>
+
+      <p class="subtitle">Автор: {{element['author']}}</p>
+      <p class="subtitle time">Обновлено: {{element['updated_at']}}</p>
+    </div>
   </div>
   <p *ngIf="element['type']=='article'" class="type" style="background: #52e32e;">Статья</p>
   <p *ngIf="element['type']=='question'" class="type" style="background: #6495ed;">Вопрос</p>
+  <p *ngIf="element['type']=='discussion'" class="type" style="background: #e65e19;">Обсуждение</p>
 </a>

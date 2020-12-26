@@ -25,6 +25,7 @@ class User(models.Model):
 class Article(models.Model):
     title = models.CharField(max_length=126, null=False, verbose_name="Заголовок")
     slug = models.SlugField(max_length=126, unique=True, null=False, default="")
+    type = models.CharField(default="article", max_length=7)
     raiting = models.IntegerField(default=0)
     author = models.CharField(max_length=24, null=False, verbose_name="Автор")
     content = models.TextField(blank=True, verbose_name="Контент")

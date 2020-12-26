@@ -9,13 +9,34 @@ from .models import Article
 from .models import Post
 from .models import User
 
-import base64
+import base64, operator
 
 # Create your views here.
 
 def index(request):
     response = {"status":"OK"}
     return JsonResponse(response)
+
+def getTop(request):
+    articles = Article.objects.order_by('-raiting', '-created_at')[:5]
+    posts = Post.objects.order_by('-raiting', '-created_at')[:5]
+
+    top = sorted(list(articles) + list(posts), key=operator.attrgetter('raiting'))
+    top.reverse()
+    body = []
+
+    for element in top:
+        body.append({"title":element.title,
+                     "slug":element.slug,
+                     "author":element.author,
+                     "updated_at":timezone.localtime(element.updated_at).strftime("%d-%m-%Y %H:%M"),
+                     "raiting":element.raiting,
+                     "type":element.type})
+
+    response = {"articles_previews":body}
+    response = JsonResponse(response)
+    response["Access-Control-Allow-Origin"] = "*"
+    return response
 
 def getLastArticles(request):
     articles = Article.objects.all()
@@ -27,7 +48,7 @@ def getLastArticles(request):
                      "author":article.author,
                      "updated_at":timezone.localtime(article.updated_at).strftime("%d-%m-%Y %H:%M"),
                      "raiting":article.raiting,
-                     "type":"article"})
+                     "type":article.type})
 
     response = {"articles_previews":body}
     response = JsonResponse(response)
