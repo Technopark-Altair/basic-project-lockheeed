@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { PostPreviewComponent } from '../post-preview/post-preview.component';
 
 import { RequestsService } from 'src/app/requests.service'
 
@@ -12,10 +11,9 @@ export class MainComponent implements OnInit {
 
   constructor(private requests: RequestsService) { }
 
-  articles = JSON.parse( this.requests.getLastPosts() );
+  articles = JSON.parse( this.requests.getLastArticles() );
 
   ngOnInit(): void {
-
   }
 
 }

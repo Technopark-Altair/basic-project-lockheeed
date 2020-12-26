@@ -8,7 +8,7 @@ export class RequestsService {
 
   constructor() { }
 
-  api_url: string = "http://192.168.0.180:8000/api/";
+  api_url: string = "http://localhost:8000/api/";
 
   makeRequest(method, slug, params = undefined, payload = undefined) {
     var xhr = new XMLHttpRequest();
@@ -24,6 +24,15 @@ export class RequestsService {
   getArticle(slug) {
     let params = 'slug=' + slug
     return this.makeRequest('GET', 'get_article/', params);
+  }
+
+  getLastArticles() {
+    return this.makeRequest('GET', 'get_last_articles/');
+  }
+
+  getPost(slug) {
+    let params = 'slug=' + slug
+    return this.makeRequest('GET', 'get_post/', params);
   }
 
   getLastPosts() {
@@ -43,5 +52,15 @@ export class RequestsService {
   getProfileInfo(session_token) {
     let params = 'token=' + session_token;
     return this.makeRequest('GET', 'get_profile/', params);
+  }
+
+  getProfilePicture(session_token) {
+    let params = 'token=' + session_token; 
+    return this.makeRequest('GET', 'get_profile_picture/', params);
+  }
+
+  exit(session_token) {
+    let params = 'token=' + session_token;
+    return this.makeRequest('POST', 'exit/', params);
   }
 }

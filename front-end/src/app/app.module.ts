@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { AppRoutingModule, routingComponents } from './app-routing.module';
 import { AppComponent } from './app.component';
 
-import { PostPreviewComponent } from './post-preview/post-preview.component';
+import { ElementPreviewComponent } from './element-preview/element-preview.component';
 import { MainComponent } from './main/main.component';
 import { ArticleComponent } from './article/article.component';
 import { NotfoundComponent } from './notfound/notfound.component';
@@ -19,12 +19,13 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatInputModule} from '@angular/material/input';
 import { AccountComponent } from './account/account.component';
+import { PostComponent } from './post/post.component';
 // import { ForumComponent } from './forum/forum.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    PostPreviewComponent,
+    ElementPreviewComponent,
     routingComponents,
     MainComponent,
     ArticleComponent,
@@ -34,6 +35,7 @@ import { AccountComponent } from './account/account.component';
     AuthComponent,
     RegComponent,
     AccountComponent,
+    PostComponent,
     // ForumComponent,
   ],
   imports: [

@@ -6,6 +6,7 @@ from django.conf import settings
 from .core import *
 
 from .models import Article
+from .models import Post
 from .models import User
 
 import base64
@@ -16,22 +17,42 @@ def index(request):
     response = {"status":"OK"}
     return JsonResponse(response)
 
-def getLastPosts(request):
+def getLastArticles(request):
     articles = Article.objects.all()
-    response = {"articles_previews":[]}
+    body = []
 
     for article in articles:
-        response["articles_previews"].append({"title":article.title,
-                                  "slug":article.slug,
-                                  "author":article.author,
-                                  "updated_at":timezone.localtime(article.updated_at).strftime("%d-%m-%Y %H:%M")})
+        body.append({"title":article.title,
+                     "slug":article.slug,
+                     "author":article.author,
+                     "updated_at":timezone.localtime(article.updated_at).strftime("%d-%m-%Y %H:%M"),
+                     "raiting":article.raiting,
+                     "type":"article"})
 
+    response = {"articles_previews":body}
+    response = JsonResponse(response)
+    response["Access-Control-Allow-Origin"] = "*"
+    return response
+
+def getLastPosts(request):
+    posts = Post.objects.all()
+    body = []
+
+    for post in posts:
+        body.append({"title":post.title,
+                     "slug":post.slug,
+                     "author":post.author,
+                     "updated_at":timezone.localtime(post.updated_at).strftime("%d-%m-%Y %H:%M"),
+                     "raiting":post.raiting,
+                     "type":post.type})
+
+    response = {"posts_previews":body}
     response = JsonResponse(response)
     response["Access-Control-Allow-Origin"] = "*"
     return response
 
 def getArticle(request):
-    response = {"article":{}}
+    body = {}
 
     try:
         slug = request.GET['slug']
@@ -39,11 +60,14 @@ def getArticle(request):
     except Article.DoesNotExist:
         response = JsonResponse(response)
     else:
-        response["article"]["title"] = article.title
-        response["article"]["author"] = article.author
-        response["article"]["updated_at"] = timezone.localtime(article.updated_at).strftime("%d-%m-%Y %H:%M")
-        response["article"]["content"] = article.content
+        body["title"] = article.title
+        body["author"] = article.author
+        body["updated_at"] = timezone.localtime(article.updated_at).strftime("%d-%m-%Y %H:%M")
+        body["content"] = article.content
+        body["raiting"] = article.raiting
+        body["type"] = "article"
 
+    response = {"article":body}
     response = JsonResponse(response)
     response["Access-Control-Allow-Origin"] = "*"
     return response
@@ -59,7 +83,8 @@ def autharization(request):
     else:
         if user.hash_pasword == password:
             token = createSessionToken()
-            updateSessionToken(token, login)
+            addSessionToken(token, login)
+            print(readSessionTokens())
             response = {"status":"OK", "session_token":token}
         else:
             response = {"status":"FAILED", "error":"Неверный логин или пароль!"}
@@ -99,7 +124,7 @@ def registration(request):
             )
 
             token = createSessionToken()
-            updateSessionToken(token, login)
+            addSessionToken(token, login)
             response = {"status":"OK", "session_token":token}
 
         else:
@@ -113,8 +138,10 @@ def registration(request):
     return response
 
 def getProfileAvatar(request):
+    print(readSessionTokens())
     try:
         login = getLoginByToken(request.GET['token'])
+        print(readSessionTokens())
         try:
             image = open(settings.MEDIA_ROOT + f"\\avatars\\{login}.png", "rb").read()
         except FileNotFoundError:
@@ -147,13 +174,28 @@ def getProfileInfo(request):
             "name":profile.name,
             "email":profile.email,
             "registered_at":profile.registered_at,
-            "raiting":profile.raiting,
+            "experience":profile.experience,
             "banned":profile.banned,
             "avatar":image
         }}
 
     except KeyError:
         response = {"status":"FAILED", "error":"Неверный токен!"}
+
+    response = JsonResponse(response)
+    response["Access-Control-Allow-Origin"] = "*"
+    return response
+
+def exit(request):
+    try:
+        token = request.GET['token']
+        if removeToken( token ):
+            response = {"status":"OK"}
+        else:
+            response = {"status":"FAILED"}
+
+    except KeyError:
+        response = {"status":"FAILED"}
 
     response = JsonResponse(response)
     response["Access-Control-Allow-Origin"] = "*"

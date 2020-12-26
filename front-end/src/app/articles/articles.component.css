@@ -23,17 +23,7 @@
   flex-direction: row;
 }
 
-/* ul {
-  display: flex;
-  flex-direction: row;
-  list-style-type: none;
-}
-
-li {
-  font-size: 1rem;
-} */
-
-.article__container {
+.articles__container {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
@@ -42,12 +32,9 @@ li {
   margin: 3vh 0;
 }
 
-app-post-preview {
-  background: #605c64;
-  border: none;
-  border-radius: 10px;
-  margin: 2vh 2vh;
-  width: 40vw;
+app-element-preview {
+    width: 40vw;
+    margin: 2vh 2vh;
 }
 
 @media (max-width: 1040px) and (min-width: 840px) {

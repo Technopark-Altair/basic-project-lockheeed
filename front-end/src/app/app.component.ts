@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
+import { RequestsService } from 'src/app/requests.service'
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -9,7 +11,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 
 export class AppComponent {
 
-  constructor(private snackBar: MatSnackBar) { }
+  constructor(private snackBar: MatSnackBar, private requests: RequestsService) { }
 
   user_picture: string = "assets/person.svg";
   user_picture_url: string = "/autharization";
@@ -26,13 +28,7 @@ export class AppComponent {
 
   getProfilePicture() {
       if (this.session_token) {
-        var xhr = new XMLHttpRequest();
-        let slug = 'http://46.39.252.82:8000/api/get_profile_picture/?'
-        let params = 'token=' + this.session_token
-
-        xhr.open('GET', slug + params, false);
-        xhr.send();
-        let result = JSON.parse(xhr.responseText);
+        let result = JSON.parse( this.requests.getProfilePicture(this.session_token) );
 
         if ( result['status'] == 'OK' ) {
           this.spawnErrorSnackBar( "Успешная авторизация!", 'valid');

@@ -41,6 +41,7 @@ export class AccountComponent implements OnInit {
   }
 
   exit() {
+    this.requests.exit(this.session_token);
     localStorage.removeItem("session_token");
     window.open(window.location.origin, "_self");
   }

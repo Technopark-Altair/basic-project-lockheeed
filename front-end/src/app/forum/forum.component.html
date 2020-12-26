@@ -1,3 +1,8 @@
 <div class="content">
   <p class="text">Форум</p>
+  <div class="posts__container">
+    <app-element-preview *ngFor="let post of posts['posts_previews']"
+        [element]="post">
+      </app-element-preview>
+  </div>
 </div>

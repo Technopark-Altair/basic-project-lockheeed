@@ -1,0 +1,9 @@
+<a class="article__preview" routerLink="/{{element['type']}}/{{element['slug']}}">
+  <div class="left__side">
+    <p class="title">{{element['title']}}</p>
+    <p class="subtitle">Автор: {{element['author']}}</p>
+    <p class="subtitle time">Обновлено: {{element['updated_at']}}</p>
+  </div>
+  <p *ngIf="element['type']=='article'" class="type" style="background: #52e32e;">Статья</p>
+  <p *ngIf="element['type']=='question'" class="type" style="background: #6495ed;">Вопрос</p>
+</a>

@@ -17,3 +17,17 @@
   height: 2px;
   background: white;
 }
+
+.posts__container {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+
+  margin: 3vh 0;
+}
+
+app-element-preview {
+    width: 40vw;
+    margin: 2vh 2vh;
+}

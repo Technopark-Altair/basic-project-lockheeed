@@ -1,9 +1,15 @@
-.post__preview {
+.article__preview {
   text-decoration: none;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: flex-start;
+
+  background: #605c64;
+  border: none;
+  border-radius: 10px;
+
+  height: 100%;
 }
 
 .type {
@@ -11,7 +17,7 @@
   padding: .3em;
 
   font-size: .7rem;
-  background: #52e32e;
+  background: black;
   border: none;
   border-radius: 5px;
 }

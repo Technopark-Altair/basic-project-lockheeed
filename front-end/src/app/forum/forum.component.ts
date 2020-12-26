@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
+import { RequestsService } from 'src/app/requests.service'
+
 @Component({
   selector: 'app-forum',
   templateUrl: './forum.component.html',
@@ -7,7 +9,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ForumComponent implements OnInit {
 
-  constructor() { }
+  constructor(private requests: RequestsService) { }
+
+  posts = JSON.parse( this.requests.getLastPosts() );
 
   ngOnInit(): void {
   }
