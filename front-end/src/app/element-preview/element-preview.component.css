@@ -6,7 +6,7 @@
   align-items: flex-start;
 
   background: #605c64;
-  border: none;
+  border-bottom: solid #264a4a 5px;
   border-radius: 10px;
 
   height: 100%;

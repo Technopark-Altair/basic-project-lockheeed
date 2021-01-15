@@ -3,121 +3,69 @@ header {
   flex-direction: row;
   flex-wrap: wrap-reverse;
 
+  align-items: flex-start;
   justify-content: space-between;
-  align-items: center;
 
-  margin-bottom: 5vh;
+  margin: 2.5vh 0;
 }
 
-.about__article {
-  width: 68vw;
-}
-
-.author__container {
+hr {
+  height: 3px;
   background: #605c64;
   border: none;
-  border-radius: 10px;
-  margin: 2vh 0;
-  width: 20vw;
-}
-
-.author__card {
-  text-decoration: none;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: flex-start;
 }
 
 .row {
   display: flex;
   flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
 }
 
-.article__count {
-  color: #007bff;
-}
+.info__container {
+  background: #605c64;
+  margin-top: 2vh;
+  padding: 7px;
 
-.raiting {
-  margin: .6vh .5vh;
-}
-
-.arrow {
-  height: 16px;
-  width: 16px;
-}
-
-.user__status {
-  margin: .5em;
-  padding: .3em;
-
-  font-size: .7rem;
-  background: #606ec4;
-  border: none;
-  border-radius: 5px;
-}
-
-p {
-  font-family: 'Rubik', sans-serif;
-  font-weight: 500;
-  color: white;
+  border-bottom: solid #264a4a 5px;
+  border-radius: 10px;
 }
 
 .title {
-  font-size: 1.7rem;
-  margin: 1.5vh 0;
+  font-family: 'Roboto', sans-serif;
+  max-width: 75%;
+
+  text-decoration: none;
+  color: white;
+  font-size: 2rem;
+  font-weight: 500;
+
+  border-left: solid white 7px;
+  padding-left: 7px;
+
 }
 
 .subtitle {
-  margin-right: 1.5vh;
+  font-family: 'Rubik', sans-serif;
+  text-decoration: none;
+  color: #f6f6f6;
+  font-size: 1rem;
+  margin-right: 5px;
+  font-weight: 500;
 }
 
-.raiting {
-  margin: .6vh .5vh;
-}
-
-.article {
-  margin: 1.5vh 0;
+.author {
+  color: #9fd9fa;
 }
 
 .time {
-  margin-top: 0;
-  color: #28c95e;
+  color: #d7e16e;
 }
 
-hr {
-  color: white;
-}
-
-.left__side {
-  padding-left: .3vw;
+.arrow {
+  width: 1rem;
+  height: 1rem;
 }
 
 .article__content {
-  font-size: 1.1rem;
-  font-weight: 300;
-}
-
-@media (max-width: 840px) {
-  header {
-    flex-direction: column-reverse;
-    align-items: flex-end;
-  }
-
-  .author__container {
-    max-width: 100%;
-    min-width: 100%;
-  }
-
-  .title {
-    font-size: 1.3rem;
-    margin: 1.5vh;
-  }
-
-  .subtitle {
-    margin: .2vh 1.5vh;
-  }
-
+  margin: 2.5vh 0;
+  color: white;
 }

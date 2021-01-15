@@ -23,13 +23,15 @@
 }
 
 .label {
+  margin-top: 2vh;
   font-family: 'Rubik', sans-serif;
-  margin-bottom: 1vh;
+  padding-left: 7px;
+  border-bottom: solid white 2px;
   text-align: left;
 
   color: white;
   font-size: 2rem;
-  font-weight: 400;
+  font-weight: 500;
 }
 
 hr {
@@ -108,5 +110,5 @@ label {
 }
 
 .link {
-  color: #acb5b5;
+  color: #d5dede;
 }

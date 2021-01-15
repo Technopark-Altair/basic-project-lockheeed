@@ -1,19 +1,26 @@
 <div class="content">
-  <div class="topic">
-    <p class="topic__label">📃🔥 Лучшие статьи</p>
-    <div class="previews__content">
-      <app-element-preview *ngFor="let article of top['articles']"
-          [element]="article">
-        </app-element-preview>
+  <div class="top">
+    <div class="topic">
+      <p class="topic__label">📃🔥 Лучшие статьи</p>
+      <div class="previews__content">
+        <app-element-preview *ngFor="let article of top['articles']"
+            [element]="article">
+          </app-element-preview>
+      </div>
+    </div>
+
+    <div class="topic">
+      <p class="topic__label">📢🔥 Лучшее на форуме</p>
+      <div class="previews__content">
+        <app-element-preview *ngFor="let post of top['posts']"
+            [element]="post">
+          </app-element-preview>
+      </div>
     </div>
   </div>
 
-  <div class="topic">
-    <p class="topic__label">📢🔥 Лучшее на форуме</p>
-    <div class="previews__content">
-      <app-element-preview *ngFor="let post of top['posts']"
-          [element]="post">
-        </app-element-preview>
-    </div>
-  </div>
+  <div class="info__container">
+    <p class="text">Если у есть знания которыми вы хотите поделиться или у вас есть тема для обсуждения, вы можете</p>
+    <button mat-raised-button class="submit__button" >Создать статью или пост</button>
+  </div>  
 </div>

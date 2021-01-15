@@ -66,10 +66,7 @@
   height: 2px;
   background: white;
 
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 0;
+ margin-top: 4px;
 
   transition: width .3s;
 }
@@ -94,11 +91,10 @@
 
 .online__mark {
   display: block;
-  width: 17px;
-  height: 17px;
+  width: 15px;
+  height: 15px;
 
   transform: translate(-20px, 24px);
-
 }
 
 .search__form {
@@ -147,6 +143,7 @@
 
   min-height: 85vh;
   background: #554853;
+  /* background: #5d505b; */
 
   padding: 0 10vw;
   margin-top: 15vh;
