@@ -18,22 +18,28 @@ def index(request):
     return JsonResponse(response)
 
 def getTop(request):
-    articles = Article.objects.order_by('-raiting', '-created_at')[:5]
-    posts = Post.objects.order_by('-raiting', '-created_at')[:5]
+    articles = Article.objects.filter(hidden=False).order_by('-raiting', '-created_at')[:5]
+    posts = Post.objects.filter(hidden=False).order_by('-raiting', '-created_at')[:5]
 
-    top = sorted(list(articles) + list(posts), key=operator.attrgetter('raiting'))
-    top.reverse()
-    body = []
+    body = {'articles':[], 'posts':[]}
 
-    for element in top:
-        body.append({"title":element.title,
+    for element in articles:
+        body['articles'].append({"title":element.title,
                      "slug":element.slug,
                      "author":element.author,
                      "updated_at":timezone.localtime(element.updated_at).strftime("%d-%m-%Y %H:%M"),
                      "raiting":element.raiting,
                      "type":element.type})
 
-    response = {"articles_previews":body}
+    for element in posts:
+        body['posts'].append({"title":element.title,
+                     "slug":element.slug,
+                     "author":element.author,
+                     "updated_at":timezone.localtime(element.updated_at).strftime("%d-%m-%Y %H:%M"),
+                     "raiting":element.raiting,
+                     "type":element.type})
+
+    response = {"top":body}
     response = JsonResponse(response)
     response["Access-Control-Allow-Origin"] = "*"
     return response

@@ -28,7 +28,7 @@ export class AppComponent {
 
   getProfilePicture() {
       if (this.session_token) {
-        let result = JSON.parse( this.requests.getProfilePicture(this.session_token) );
+        let result = this.requests.getProfilePicture(this.session_token);
 
         if ( result['status'] == 'OK' ) {
           this.spawnErrorSnackBar( "Успешная авторизация!", 'valid');

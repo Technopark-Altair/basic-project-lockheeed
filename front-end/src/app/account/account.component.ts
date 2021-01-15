@@ -28,7 +28,7 @@ export class AccountComponent implements OnInit {
 
   getProfileInfo() {
       if (this.session_token) {
-        let result = JSON.parse( this.requests.getProfileInfo(this.session_token) );
+        let result = this.requests.getProfileInfo(this.session_token);
 
         if ( result['status'] == 'OK' ) {
           this.data = result['data'];

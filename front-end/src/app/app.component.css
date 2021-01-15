@@ -87,8 +87,8 @@
 }
 
 .account__logo {
-  width: 9vh;
-  height: 9vh;
+  width: 8vh;
+  height: 8vh;
   border-radius: 50%;
 }
 
@@ -148,15 +148,13 @@
   min-height: 85vh;
   background: #554853;
 
-  padding: 0 5vw;
+  padding: 0 10vw;
   margin-top: 15vh;
 }
 
 .footer {
   height: 10vh;
   background: #251c1c;
-  /* background: rgb(4,30,31);
-  background: linear-gradient(129deg, rgba(4,30,31,1) 0%, rgba(23,51,51,1) 44%, rgba(47,66,65,1) 100%); */
 }
 
 @media (max-width: 1050px) {

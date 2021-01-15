@@ -8,9 +8,9 @@ export class RequestsService {
 
   constructor() { }
 
-  api_url: string = "http://46.39.252.82:8000/api/";
+  api_url: string = "http://localhost:8000/api/";
 
-  makeRequest(method, slug, params = undefined, payload = undefined) {
+  makeRequest(method, slug, params = undefined, payload = undefined): string {
     var xhr = new XMLHttpRequest();
 
     var request_uri = this.api_url + slug;
@@ -21,50 +21,50 @@ export class RequestsService {
     return xhr.responseText;
   }
 
-  getTop() {
-    return this.makeRequest('GET', 'get_top/');
+  getTop(): JSON {
+    return JSON.parse( this.makeRequest('GET', 'get_top/') );
   }
 
-  getLastArticles() {
-    return this.makeRequest('GET', 'get_last_articles/');
+  getLastArticles(): JSON {
+    return JSON.parse( this.makeRequest('GET', 'get_last_articles/') );
   }
 
-  getLastPosts() {
-    return this.makeRequest('GET', 'get_last_posts/');
+  getLastPosts(): JSON {
+    return JSON.parse( this.makeRequest('GET', 'get_last_posts/') );
   }
 
-  getArticle(slug) {
+  getArticle(slug): JSON {
     let params = 'slug=' + slug
-    return this.makeRequest('GET', 'get_article/', params);
+    return JSON.parse( this.makeRequest('GET', 'get_article/', params) );
   }
 
-  getPost(slug) {
+  getPost(slug): JSON {
     let params = 'slug=' + slug
-    return this.makeRequest('GET', 'get_post/', params);
+    return JSON.parse( this.makeRequest('GET', 'get_post/', params) );
   }
 
-  registration(login, email, name, password, base64Image) {
+  registration(login, email, name, password, base64Image): JSON {
     let params = 'login=' + login + '&email=' + email + '&name=' + name + '&password=' + Md5.hashStr(JSON.stringify(password))
-    return this.makeRequest('POST', 'reg/', params, base64Image);
+    return JSON.parse( this.makeRequest('POST', 'reg/', params, base64Image) );
   }
 
-  autharization(login, password) {
+  autharization(login, password): JSON {
     let params = "login=" + login + '&password=' + Md5.hashStr(JSON.stringify(password));
-    return this.makeRequest('POST', 'auth/', params);
+    return JSON.parse( this.makeRequest('POST', 'auth/', params) );
   }
 
-  getProfileInfo(session_token) {
+  getProfileInfo(session_token): JSON {
     let params = 'token=' + session_token;
-    return this.makeRequest('GET', 'get_profile/', params);
+    return JSON.parse( this.makeRequest('GET', 'get_profile/', params) );
   }
 
-  getProfilePicture(session_token) {
+  getProfilePicture(session_token): JSON {
     let params = 'token=' + session_token;
-    return this.makeRequest('GET', 'get_profile_picture/', params);
+    return JSON.parse( this.makeRequest('GET', 'get_profile_picture/', params) );
   }
 
-  exit(session_token) {
+  exit(session_token): JSON {
     let params = 'token=' + session_token;
-    return this.makeRequest('POST', 'exit/', params);
+    return JSON.parse( this.makeRequest('POST', 'exit/', params) );
   }
 }

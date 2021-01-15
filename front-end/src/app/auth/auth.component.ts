@@ -32,7 +32,7 @@ export class AuthComponent implements OnInit {
 
   autharization() {
     if ( this.checkInputData() ){
-      let result = JSON.parse( this.requests.autharization(this.login, this.password) );
+      let result = this.requests.autharization(this.login, this.password);
 
       if ( result['status'] == 'OK' ) {
         localStorage.setItem('session_token', result['session_token']);

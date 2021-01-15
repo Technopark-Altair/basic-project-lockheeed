@@ -11,7 +11,7 @@ export class ForumComponent implements OnInit {
 
   constructor(private requests: RequestsService) { }
 
-  posts = JSON.parse( this.requests.getLastPosts() );
+  posts: JSON = this.requests.getLastPosts();
 
   ngOnInit(): void {
   }

@@ -11,7 +11,7 @@ export class ArticlesComponent implements OnInit {
 
   constructor(private requests: RequestsService) { }
 
-  articles = JSON.parse( this.requests.getLastArticles() );
+  articles: JSON = this.requests.getLastArticles();
 
   ngOnInit(): void {
 

@@ -51,7 +51,7 @@ export class RegComponent implements OnInit {
   registration() {
     if ( this.checkInputData() ) {
 
-      let result = JSON.parse( this.requests.registration(this.login, this.email, this.name, this.password, this.base64Image) );
+      let result = this.requests.registration(this.login, this.email, this.name, this.password, this.base64Image);
 
       if ( result['status'] == 'OK' ) {
         localStorage.setItem('session_token', result['session_token']);

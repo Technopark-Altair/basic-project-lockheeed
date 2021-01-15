@@ -20,7 +20,7 @@ export class ArticleComponent implements OnInit {
 
   constructor(private activateRoute: ActivatedRoute, router: Router, sanitizer: DomSanitizer, requests: RequestsService){
         activateRoute.params.subscribe(params=>this.slug=params['slug']);
-        this.article = JSON.parse( requests.getArticle(this.slug) )["article"];
+        this.article = requests.getArticle(this.slug)["article"];
         this.article_content = sanitizer.bypassSecurityTrustHtml(this.article['content']);
         if ( !Object.keys(this.article).length ) {
           router.navigate(['/not_found']);
