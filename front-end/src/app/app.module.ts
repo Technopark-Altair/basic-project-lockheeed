@@ -13,14 +13,16 @@ import { ArticlesComponent } from './articles/articles.component';
 import { SearchComponent } from './search/search.component';
 import { AuthComponent } from './auth/auth.component';
 import { RegComponent } from './reg/reg.component';
+import { AccountComponent } from './account/account.component';
+import { PostComponent } from './post/post.component';
+import { ForumComponent } from './forum/forum.component';
+
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import {MatButtonModule} from '@angular/material/button';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatInputModule} from '@angular/material/input';
-import { AccountComponent } from './account/account.component';
-import { PostComponent } from './post/post.component';
-// import { ForumComponent } from './forum/forum.component';
+
 
 @NgModule({
   declarations: [
@@ -36,7 +38,7 @@ import { PostComponent } from './post/post.component';
     RegComponent,
     AccountComponent,
     PostComponent,
-    // ForumComponent,
+    ForumComponent,
   ],
   imports: [
     BrowserModule,

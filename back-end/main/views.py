@@ -56,7 +56,7 @@ def getLastArticles(request):
                      "raiting":article.raiting,
                      "type":article.type})
 
-    response = {"articles_previews":body}
+    response = {"articles":body}
     response = JsonResponse(response)
     response["Access-Control-Allow-Origin"] = "*"
     return response
@@ -73,7 +73,7 @@ def getLastPosts(request):
                      "raiting":post.raiting,
                      "type":post.type})
 
-    response = {"posts_previews":body}
+    response = {"posts":body}
     response = JsonResponse(response)
     response["Access-Control-Allow-Origin"] = "*"
     return response
