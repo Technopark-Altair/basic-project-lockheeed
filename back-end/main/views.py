@@ -29,6 +29,7 @@ def getTop(request):
                      "author":element.author,
                      "updated_at":timezone.localtime(element.updated_at).strftime("%d-%m-%Y %H:%M"),
                      "raiting":element.raiting,
+                     "views":element.views,
                      "type":element.type})
 
     for element in posts:
@@ -37,6 +38,7 @@ def getTop(request):
                      "author":element.author,
                      "updated_at":timezone.localtime(element.updated_at).strftime("%d-%m-%Y %H:%M"),
                      "raiting":element.raiting,
+                     "views":element.views,
                      "type":element.type})
 
     response = {"top":body}
@@ -54,6 +56,7 @@ def getLastArticles(request):
                      "author":article.author,
                      "updated_at":timezone.localtime(article.updated_at).strftime("%d-%m-%Y %H:%M"),
                      "raiting":article.raiting,
+                     "views":article.views,
                      "type":article.type})
 
     response = {"articles":body}
@@ -71,6 +74,7 @@ def getLastPosts(request):
                      "author":post.author,
                      "updated_at":timezone.localtime(post.updated_at).strftime("%d-%m-%Y %H:%M"),
                      "raiting":post.raiting,
+                     "views":post.views,
                      "type":post.type})
 
     response = {"posts":body}
@@ -84,15 +88,20 @@ def getArticle(request):
     try:
         slug = request.GET['slug']
         article = Article.objects.get(slug=slug)
+        article.views += 1
+        article.save()
+
     except Article.DoesNotExist:
         response = JsonResponse(response)
     else:
-        body["title"] = article.title
-        body["author"] = article.author
-        body["updated_at"] = timezone.localtime(article.updated_at).strftime("%d-%m-%Y %H:%M")
-        body["content"] = article.content
-        body["raiting"] = article.raiting
-        body["type"] = "article"
+        body = {"title":article.title,
+                "slug":article.slug,
+                "author":article.author,
+                "updated_at":timezone.localtime(article.updated_at).strftime("%d-%m-%Y %H:%M"),
+                "content":article.content,
+                "raiting":article.raiting,
+                "views":article.views,
+                "type":article.type}
 
     response = {"article":body}
     response = JsonResponse(response)
@@ -165,10 +174,8 @@ def registration(request):
     return response
 
 def getProfileAvatar(request):
-    print(readSessionTokens())
     try:
         login = getLoginByToken(request.GET['token'])
-        print(readSessionTokens())
         try:
             image = open(settings.MEDIA_ROOT + f"\\avatars\\{login}.png", "rb").read()
         except FileNotFoundError:
@@ -224,6 +231,40 @@ def exit(request):
     except KeyError:
         response = {"status":"FAILED"}
 
+    response = JsonResponse(response)
+    response["Access-Control-Allow-Origin"] = "*"
+    return response
+
+def rateUp(request):
+    login = getLoginByToken(request.GET['token'])
+    if request.GET['type'] == 'article':
+        article = Article.objects.get(slug=request.GET['slug'])
+        article.raiting += 1
+        article.save()
+
+    elif request.GET['type'] == 'post':
+        post = Post.objects.get(slug=request.GET['slug'])
+        post.raiting += 1
+        post.save()
+
+    response = {"status":"OK"}
+    response = JsonResponse(response)
+    response["Access-Control-Allow-Origin"] = "*"
+    return response
+
+def rateDown(request):
+    login = getLoginByToken(request.GET['token'])
+    if request.GET['type'] == 'article':
+        article = Article.objects.get(slug=request.GET['slug'])
+        article.raiting -= 1
+        article.save()
+
+    elif request.GET['type'] == 'post':
+        post = Post.objects.get(slug=request.GET['slug'])
+        post.raiting -= 1
+        post.save()
+
+    response = {"status":"OK"}
     response = JsonResponse(response)
     response["Access-Control-Allow-Origin"] = "*"
     return response

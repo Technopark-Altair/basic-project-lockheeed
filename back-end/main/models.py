@@ -31,6 +31,7 @@ class Article(models.Model):
     content = models.TextField(blank=True, verbose_name="Контент")
     updated_at = models.DateTimeField(auto_now_add=True, verbose_name="Обновлено")
     created_at = models.DateTimeField(auto_now=True, verbose_name="Создано")
+    views = models.PositiveIntegerField(default=0)
     hidden = models.BooleanField(default=False)
 
     def __str__(self):
@@ -50,6 +51,7 @@ class Post(models.Model):
     answers = models.JSONField(default=dict, blank=True, verbose_name="Ответы")
     updated_at = models.DateTimeField(auto_now_add=True, verbose_name="Обновлено")
     created_at = models.DateTimeField(auto_now=True, verbose_name="Создано")
+    views = models.PositiveIntegerField(default=0)
     hidden = models.BooleanField(default=False)
 
     def __str__(self):

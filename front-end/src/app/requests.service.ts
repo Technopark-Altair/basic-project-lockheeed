@@ -63,6 +63,16 @@ export class RequestsService {
     return JSON.parse( this.makeRequest('GET', 'get_profile_picture/', params) );
   }
 
+  rateUp(session_token, type, slug) {
+    let params = 'token=' + session_token + '&type=' + type + '&slug=' + slug;
+    return JSON.parse( this.makeRequest('POST', 'rate_up/', params) );
+  }
+
+  rateDown(session_token, type, slug) {
+    let params = 'token=' + session_token + '&type=' + type + '&slug=' + slug;
+    return JSON.parse( this.makeRequest('POST', 'rate_down/', params) );
+  }
+
   exit(session_token): JSON {
     let params = 'token=' + session_token;
     return JSON.parse( this.makeRequest('POST', 'exit/', params) );

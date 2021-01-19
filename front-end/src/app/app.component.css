@@ -143,7 +143,8 @@
 
   min-height: 85vh;
   background: #554853;
-  /* background: #5d505b; */
+  background-image: url(/assets/background.svg);
+  background-size: 450px 450px;
 
   padding: 0 10vw;
   margin-top: 15vh;

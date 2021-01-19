@@ -16,9 +16,11 @@ export class ArticleComponent implements OnInit {
   article_content: SafeHtml;
   article: JSON;
 
+  session_token: string = localStorage.getItem('session_token');
+
   // constructor(private ) { }
 
-  constructor(private activateRoute: ActivatedRoute, router: Router, sanitizer: DomSanitizer, requests: RequestsService){
+  constructor(private activateRoute: ActivatedRoute, private router: Router, private sanitizer: DomSanitizer, private requests: RequestsService){
         activateRoute.params.subscribe(params=>this.slug=params['slug']);
         this.article = requests.getArticle(this.slug)["article"];
         this.article_content = sanitizer.bypassSecurityTrustHtml(this.article['content']);
@@ -28,7 +30,13 @@ export class ArticleComponent implements OnInit {
     }
 
   ngOnInit(): void {
-
   }
 
+  rateUp() {
+    this.requests.rateUp(this.session_token, 'article', this.slug);
+  }
+
+  rateDown() {
+    this.requests.rateDown(this.session_token, 'article', this.slug);
+  }
 }

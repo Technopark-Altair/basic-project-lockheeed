@@ -14,12 +14,12 @@
 
     <div *ngIf="element['raiting'] == 0" class="row">
       <p class="subtitle">Рейтинг: </p>
-      <p class="raiting" style="color:#b5b5b5;">{{element['raiting']}}</p>
+      <p class="subtitle" style="color:#b5b5b5;">{{element['raiting']}}</p>
     </div>
 
     <div *ngIf="element['raiting'] < 0" class="row">
       <p class="subtitle">Рейтинг: </p>
-      <p class="raiting" style="color:#e65e19;">{{element['raiting'] * -1}}</p>
+      <p class="subtitle" style="color:#e65e19;">{{element['raiting'] * -1}}</p>
       <img class="arrow" src="assets/red_arrow.svg" alt="">
     </div>
 

@@ -1,34 +1,96 @@
-<header>
-  <p class="title">{{article['title']}}</p>
-  <div class="info__container">
-    <div *ngIf="article['raiting'] > 0" class="row top">
-      <p class="subtitle">Рейтинг:</p>
-      <p class="subtitle" style="color:#51df00;">{{article['raiting']}}</p>
-      <img class="arrow" src="assets/green_arrow.svg" alt="">
+<div class="content">
+  <header>
+    <div class="info__container">
+      <div class="row mr">
+        <p class="subtitle">Автор: </p>
+        <p class="subtitle author">{{article['author']}}</p>
+      </div>
+
+      <div *ngIf="article['raiting'] > 0" class="row mr">
+        <p class="subtitle">Рейтинг:</p>
+        <p class="subtitle" style="color:#51df00;">{{article['raiting']}}</p>
+        <img class="icon" src="assets/green_arrow.svg" alt="">
+      </div>
+
+      <div *ngIf="article['raiting'] == 0" class="row mr">
+        <p class="subtitle">Рейтинг: </p>
+        <p class="subtitle" style="color:#b5b5b5;">{{article['raiting']}}</p>
+      </div>
+
+      <div *ngIf="article['raiting'] < 0" class="row mr">
+        <p class="subtitle">Рейтинг: </p>
+        <p class="subtitle" style="color:#e65e19;">{{article['raiting'] * -1}}</p>
+        <img class="icon" src="assets/red_arrow.svg" alt="">
+      </div>
+
+      <div class="row">
+        <p class="subtitle" style="color:#b5b5b5;">{{article['views']}}</p>
+        <img class="icon" src="assets/eye.svg" alt="">
+      </div>
     </div>
 
-    <div *ngIf="article['raiting'] == 0" class="row">
-      <p class="subtitle">Рейтинг: </p>
-      <p class="raiting" style="color:#b5b5b5;">{{article['raiting']}}</p>
-    </div>
-
-    <div *ngIf="article['raiting'] < 0" class="row">
-      <p class="subtitle">Рейтинг: </p>
-      <p class="raiting" style="color:#e65e19;">{{article['raiting'] * -1}}</p>
-      <img class="arrow" src="assets/red_arrow.svg" alt="">
-    </div>
-
-    <div class="row">
-      <p class="subtitle">Автор: </p>
-      <p class="subtitle author">{{article['author']}}</p>
-    </div>
-
+    <p class="title">{{article['title']}}</p>
     <div class="row">
       <p class="subtitle">Обновлено: </p>
       <p class="subtitle time">{{article['updated_at']}}</p>
     </div>
+  </header>
+
+  <hr>
+  <p [innerHTML]="article_content" class="article__content">
+  </p>
+
+  <div class="row fw vm">
+    <div class="info__container">
+      <div class="row mr">
+        <button (click)="rateUp()" class="rate__up icon" type="button" name="button"></button>
+        <p *ngIf="article['raiting'] > 0" class="subtitle" style="color:#51df00;">{{article['raiting']}}</p>
+        <p *ngIf="article['raiting'] == 0" class="subtitle" style="color:#b5b5b5;">{{article['raiting']}}</p>
+        <p *ngIf="article['raiting'] < 0" class="subtitle" style="color:#e65e19;">{{article['raiting'] * -1}}</p>
+        <button (click)="rateDown()" class="rate__down icon" type="button" name="button"></button>
+      </div>
+
+      <div class="row">
+        <p class="subtitle" style="color:#b5b5b5;">{{article['views']}}</p>
+        <img class="icon" src="assets/eye.svg" alt="">
+      </div>
+    </div>
   </div>
-</header>
-<hr>
-<p [innerHTML]="article_content" class="article__content">
-</p>
+
+
+<!-- <div class="content">
+  <header>
+    <p class="title">{{article['title']}}</p>
+  </header>
+
+  <hr>
+  <p [innerHTML]="article_content" class="article__content">
+  </p>
+
+  <div class="footer__bar">
+    <div class="row mr">
+      <p class="subtitle">Рейтинг: </p>
+      <button (click)="rateUp()" class="rate__up icon" type="button" name="button"></button>
+      <p *ngIf="article['raiting'] > 0" class="subtitle" style="color:#51df00;">{{article['raiting']}}</p>
+      <p *ngIf="article['raiting'] == 0" class="subtitle" style="color:#b5b5b5;">{{article['raiting']}}</p>
+      <p *ngIf="article['raiting'] < 0" class="subtitle" style="color:#e65e19;">{{article['raiting'] * -1}}</p>
+      <button (click)="rateDown()" class="rate__down icon" type="button" name="button"></button>
+    </div>
+
+    <div class="row mr">
+      <p class="subtitle">Автор: </p>
+      <p class="subtitle author">{{article['author']}}</p>
+    </div>
+
+    <div class="row mr">
+      <p class="subtitle">Обновлено: </p>
+      <p class="subtitle time">{{article['updated_at']}}</p>
+    </div>
+
+    <div class="row">
+      <p class="subtitle">Просмотров: </p>
+      <p class="subtitle" style="color:#b5b5b5;">{{article['views']}}</p>
+      <img class="icon" src="assets/eye.svg" alt="">
+    </div>
+  </div>
+</div> -->
