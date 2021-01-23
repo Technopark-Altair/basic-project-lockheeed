@@ -21,6 +21,11 @@ export class RequestsService {
     return xhr.responseText;
   }
 
+  search(query): JSON {
+    let params = 'query=' + query
+    return JSON.parse( this.makeRequest('GET', 'search/', params) );
+  }
+
   getTop(): JSON {
     return JSON.parse( this.makeRequest('GET', 'get_top/') );
   }
@@ -71,6 +76,16 @@ export class RequestsService {
   rateDown(session_token, type, slug) {
     let params = 'token=' + session_token + '&type=' + type + '&slug=' + slug;
     return JSON.parse( this.makeRequest('POST', 'rate_down/', params) );
+  }
+
+  updateAvatar(session_token, base64Image): JSON {
+    let params = 'token=' + session_token;
+    return JSON.parse( this.makeRequest('POST', 'update_avatar/', params, base64Image) );
+  }
+
+  updatePassword(session_token, current_password, new_password): JSON {
+    let params = 'token=' + session_token + '&current=' + Md5.hashStr(JSON.stringify(current_password)) + '&new=' + Md5.hashStr(JSON.stringify(new_password));
+    return JSON.parse( this.makeRequest('POST', 'update_password/', params) );
   }
 
   exit(session_token): JSON {

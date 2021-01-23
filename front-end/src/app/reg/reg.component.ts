@@ -22,7 +22,7 @@ export class RegComponent implements OnInit {
 
   base64Image: string;
 
-  spawnErrorSnackBar(error_text, panel_class = 'error') {
+  spawnSnackBar(error_text, panel_class = 'error') {
     this.snackBar.open(error_text, "", {
       duration: 3000,
       horizontalPosition: 'right',
@@ -42,22 +42,22 @@ export class RegComponent implements OnInit {
    }
 
   checkInputData() {
-    if ( !EmailValidator.validate(this.email) ) { this.spawnErrorSnackBar("Неверный почтовый формат!"); return false; };
-    if ( this.password.length <= 7 ) { this.spawnErrorSnackBar("Длинна пароля должна быть от 8 символов!"); return false; }
-    if ( this.login.length <= 1 ) { this.spawnErrorSnackBar("Длинна логина должна составлять от 2 символов!"); return false; }
+    if ( !EmailValidator.validate(this.email) ) { this.spawnSnackBar('Неверный почтовый формат!', 'error'); return false; };
+    if ( this.password.length <= 7 ) { this.spawnSnackBar('Длинна пароля должна быть от 8 символов!', 'error'); return false; }
+    if ( this.login.length <= 1 ) { this.spawnSnackBar('Длинна логина должна составлять от 2 символов!', 'error'); return false; }
     return true;
   }
 
   registration() {
     if ( this.checkInputData() ) {
 
-      let result = this.requests.registration(this.login, this.email, this.name, this.password, this.base64Image);
+      let res = this.requests.registration(this.login, this.email, this.name, this.password, this.base64Image);
 
-      if ( result['status'] == 'OK' ) {
-        localStorage.setItem('session_token', result['session_token']);
+      if ( res['status'] == 'OK' ) {
+        localStorage.setItem('session_token', res['session_token']);
         window.open(window.location.origin, "_self");
       } else {
-        this.spawnErrorSnackBar(result['error']);
+        this.spawnSnackBar(res['msg']);
       }
     }
   }

@@ -16,9 +16,13 @@ export class AccountComponent implements OnInit {
   session_token: string = localStorage.getItem('session_token');
   data: any = {};
 
-  email: string = "";
+  current_password: string = "";
+  new_password: string = "";
 
-  spawnErrorSnackBar(error_text, panel_class) {
+  base64Image: string;
+  changed: boolean = false;
+
+  spawnSnackBar(error_text, panel_class) {
     this.snackBar.open(error_text, "", {
       duration: 3000,
       horizontalPosition: 'right',
@@ -26,14 +30,26 @@ export class AccountComponent implements OnInit {
     });
   }
 
+  handleInputFile(file: FileList){
+     var fileToUpload = file.item(0);
+
+     var reader = new FileReader();
+     reader.readAsDataURL(fileToUpload);
+
+     reader.onload = (event:any) => {
+       this.base64Image = reader.result as string;
+       this.changed = true;
+     }
+   }
+
   getProfileInfo() {
       if (this.session_token) {
-        let result = this.requests.getProfileInfo(this.session_token);
+        let res = this.requests.getProfileInfo(this.session_token);
 
-        if ( result['status'] == 'OK' ) {
-          this.data = result['data'];
-          this.email = this.data['email'];
-          return undefined;
+        if ( res['status'] == 'OK' ) {
+          this.data = res['data'];
+          this.base64Image = this.data['avatar'];
+          return;
         }
       }
 
@@ -41,9 +57,37 @@ export class AccountComponent implements OnInit {
   }
 
   exit() {
-    this.requests.exit(this.session_token);
-    localStorage.removeItem("session_token");
-    window.open(window.location.origin, "_self");
+    let res = this.requests.exit(this.session_token);
+
+    if ( res['status'] == 'OK' ) {
+      localStorage.removeItem("session_token");
+      window.open(window.location.origin, "_self");
+    } else {
+      this.spawnSnackBar(res['msg'], 'error');
+    }
+  }
+
+  updatePassword() {
+    let res = this.requests.updatePassword(this.session_token, this.current_password, this.new_password);
+
+    if ( res['status'] == 'OK' ) {
+      this.spawnSnackBar('Пароль успешно сменён!', 'valid');
+
+      this.current_password = "";
+      this.new_password = "";
+    } else {
+      this.spawnSnackBar(res['msg'], 'error');
+    }
+  }
+
+  updateAvatar() {
+    let res = this.requests.updateAvatar(this.session_token, this.base64Image);
+
+    if ( res['status'] == 'OK' ) {
+      window.open(window.location.href, "_self");
+    } else {
+      this.spawnSnackBar(res['msg'], 'error');
+    }
   }
 
   ngOnInit() {

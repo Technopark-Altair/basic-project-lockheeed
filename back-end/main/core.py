@@ -40,3 +40,9 @@ def removeTokenByLogin(login):
             del session_tokens[t]
 
     json.dump(session_tokens, open(TOKENS_FILE, "w"))
+
+def parseImage(image_body):
+    format = image_body.split(b'data:image/')[1].split(b';')[0].decode('utf-8')
+    print(format)
+    body = image_body.split(b';base64,')[1]
+    return format, body

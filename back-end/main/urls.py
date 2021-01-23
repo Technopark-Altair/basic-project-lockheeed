@@ -15,5 +15,8 @@ urlpatterns = [
     path('get_profile/', getProfileInfo),
     path('exit/', csrf_exempt(exit)),
     path('rate_up/', csrf_exempt(rateUp)),
-    path('rate_down/', csrf_exempt(rateDown))
+    path('rate_down/', csrf_exempt(rateDown)),
+    path('search/', search),
+    path('update_avatar/', csrf_exempt(updateAvatar)),
+    path('update_password/', csrf_exempt(updatePassword))
 ]

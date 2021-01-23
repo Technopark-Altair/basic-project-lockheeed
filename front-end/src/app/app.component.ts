@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
 
 import { RequestsService } from 'src/app/requests.service'
 
@@ -11,12 +12,13 @@ import { RequestsService } from 'src/app/requests.service'
 
 export class AppComponent {
 
-  constructor(private snackBar: MatSnackBar, private requests: RequestsService) { }
+  constructor(private snackBar: MatSnackBar, private requests: RequestsService, private router: Router) { }
 
   user_picture: string = "assets/person.svg";
   user_picture_url: string = "/autharization";
   session_token: string = localStorage.getItem('session_token');
   online: boolean = false;
+  search_query: string = "";
 
   spawnErrorSnackBar(error_text, panel_class) {
     this.snackBar.open(error_text, "", {
@@ -40,6 +42,11 @@ export class AppComponent {
         }
       }
   }
+
+  search() {
+    this.router.navigate(["/search", {'query':this.search_query}]);
+  }
+
   ngOnInit() {
     this.getProfilePicture();
   }

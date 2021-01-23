@@ -130,11 +130,13 @@
 }
 
 .search__button {
-  background: none;
-  border: none;
+  height: 18px;
+  width: 18px;
 
-  background-image: url("../assets/loupe.svg");
+  background: url("../assets/loupe.svg");
   background-repeat: no-repeat;
+
+  border: none;
 }
 
 .container {

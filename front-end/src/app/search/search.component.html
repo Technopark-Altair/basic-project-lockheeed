@@ -1,1 +1,17 @@
-<p>search works!</p>
+<div class="content">
+  <label>Поиск</label>
+
+  <div class="info__container">
+    <p class="text">Есть интересный материал для статьи или обсужднения?</p>
+    <button mat-raised-button class="submit__button" >Создайте статью или пост</button>
+  </div>
+
+  <div class="topic">
+    <p class="topic__label">🔎 Результаты поиска по запросу "{{query}}"</p>
+    <div class="previews__content">
+      <app-element-preview *ngFor="let topic of searchResult['topics']"
+          [element]="topic">
+        </app-element-preview>
+    </div>
+  </div>
+</div>

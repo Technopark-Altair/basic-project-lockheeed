@@ -6,19 +6,22 @@
       <h1 class=logo__text>safe.ml</h1>
     </div>
   </a>
+
   <div class="links_container">
     <a class="link" routerLink="">Главная</a>
     <a class="link" routerLink="/forum">Форум</a>
     <a class="link" routerLink="/articles">Статьи</a>
   </div>
+
   <a class="account__form" routerLink={{user_picture_url}}>
     <img class="account__logo" src={{user_picture}} alt="Авторизация">
-    <img *ngIf="online" class="online__mark" src="assets/online.svg" alt="">
+    <img *ngIf="online && user_picture == 'assets/person.svg'" class="online__mark" src="assets/online.svg" alt="">
   </a>
-  <form class="search__form" action="search">
-    <input class="search__button" type="submit" value="">
-    <input class="search__input" type="text" name="request" value="">
-  </form>
+
+  <div class="search__form" action="search">
+    <button (click)="search()" class="search__button" type="submit" [disabled]="!search_query"></button>
+    <input (change)="search()" class="search__input" type="text" [(ngModel)]="search_query" >
+  </div>
 </nav>
 
 <div class="container">

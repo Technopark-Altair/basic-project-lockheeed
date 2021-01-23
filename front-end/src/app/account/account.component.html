@@ -1,36 +1,72 @@
 <div class="content">
-  <p class="text">Информация об аккаунте</p>
+  <label>Информация об аккаунте</label>
 
   <div class="splitted__container">
-    <div class="box">
-      <div class="twin__line">
-        <div class="line">
-          <label>Логин</label>
-          <input class="twin input__line" type="text" name="" value="{{data['username']}}" disabled>
+    <div class="box vm">
+      <div class="card">
+        <p class="card__label">Общая информация</p>
+        <div class="card__content">
+          <div class="row">
+            <p class="subtitle mr">Логин: </p>
+            <p class="data">{{data['username']}}</p>
+          </div>
+
+          <div class="row">
+            <p class="subtitle mr">Имя: </p>
+            <p class="data">{{data['name']}}</p>
+          </div>
+
+          <div class="row">
+            <p class="subtitle mr">Почта: </p>
+            <p class="data">{{data['email']}}</p>
+          </div>
+
+          <div class="row">
+            <p class="subtitle mr">Опыт: </p>
+            <p class="data exp">{{data['exp']}} xp</p>
+          </div>
+
+          <div class="row">
+            <p class="subtitle mr">Зарегистрирован: </p>
+            <p class="data time">{{data['registered_at']}}</p>
+          </div>
+
+          <div class="row">
+            <p class="subtitle mr">Статус аккаунта: </p>
+            <p *ngIf="!data['banned']" class="subtitle status" style="background: #52e32e;">Активен</p>
+            <p *ngIf="data['banned']" class="subtitle status" style="background: #e65e19;">Забанен</p>
+          </div>
         </div>
+      </div>
 
-        <div class="line">
-          <label>Имя</label>
-          <input class="twin input__line" type="text" name="" value="{{data['name']}}" disabled>
+      <div class="card vm">
+        <p class="card__label">Смена пароля</p>
+        <div class="card__content">
+          <div class="line">
+            <p class="subtitle">Текущий пароль</p>
+            <input class="input__line" type="password" name="" [(ngModel)]="current_password" >
+          </div>
+          <div class="line svm">
+            <p class="subtitle">Новый пароль</p>
+            <input class="input__line" type="password" name="" [(ngModel)]="new_password" >
+          </div>
         </div>
       </div>
 
-      <div class="line">
-        <label>Почта</label>
-        <input class="input__line" type="email" name="" [(ngModel)]="email" >
-      </div>
-
-      <div class="line">
-        <button (click)="exit()" mat-raised-button class="exit__button" >Выход</button>
-      </div>
+    <div class="row vm">
+      <button mat-raised-button (click)="exit()" class="exit mr" >Выход</button>
+      <button mat-raised-button (click)="updatePassword()" class="save" [disabled]="!current_password || !new_password">Сменить пароль</button>
+    </div>
 
     </div>
-    <div class="box">
+
+    <div class="box vm">
       <div class="line">
-        <label>Аватарка (.png формат)</label>
-        <img class="profile__picture" src="{{data['avatar']}}" alt="">
-        <input class="input__file" type="file" #Image accept="Image/*">
+        <p class="subtitle">Аватарка</p>
+        <img class="profile__picture" src="{{base64Image}}" alt="">
+        <input class="input__file" type="file" #Image accept="Image/*" (change)="handleInputFile($event.target.files)">
       </div>
+      <button mat-raised-button (click)="updateAvatar()" class="save" [disabled]="!changed">Сохранить</button>
     </div>
   </div>
 

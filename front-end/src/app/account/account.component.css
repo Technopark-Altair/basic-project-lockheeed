@@ -1,3 +1,48 @@
+.content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  align-items: flex-start;
+}
+
+label {
+  margin: 1.5vh 0;
+  color: white;
+  font-size: 2.5rem;
+  width: 100%;
+}
+
+label::after {
+  display: block;
+  content: "";
+  background: #605c64;
+
+  height: 4px;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+
+  margin: 0.35vh 0;
+}
+
+.subtitle {
+  font-family: 'Rubik', sans-serif;
+  text-decoration: none;
+  color: #e2e2e2;
+  font-size: 1rem;
+  margin-right: 5px;
+  font-weight: 500;
+}
+
+.data {
+  color: white;
+  font-weight: 400;
+}
+
 .text {
   font-family: 'Roboto Mono', monospace;
   font-weight: 500;
@@ -26,16 +71,15 @@
 }
 
 .box {
-  width: 30vw;
+  width: 32vw;
   margin: 0 5vw;
 }
 
 .profile__picture {
-  width: 10vw;
-  height: 10vw;
+  width: 12vw;
+  height: 12vw;
 
   margin: 1vh 1vw;
-
 }
 
 .twin__line {
@@ -50,13 +94,7 @@
   flex-direction: column;
   justify-content: flex-start;
 
-  margin: 0.7vh 0;
-}
-
-label {
-  color: #e6f2f2;
-  display: block;
-  transform: translate(0, 5px);
+  margin: 0.35vh 0;
 }
 
 .input__line {
@@ -67,7 +105,7 @@ label {
   border-radius: 5px;
 
   padding: 8px 15px;
-  margin: 6px 0;
+  margin: 2px 0;
 
   -webkit-box-shadow: 3px 3px 7px 0px rgba(51,51,51,1);
   -moz-box-shadow: 3px 3px 7px 0px rgba(51,51,51,1);
@@ -79,16 +117,76 @@ label {
 
   font-size: 1.1rem;
   margin: 6px 0;
-
 }
 
 .twin {
   width: 85%;
 }
 
-.exit__button {
-  margin-top: 3vh;
+button {
+  width: 50%;
+}
+
+.exit {
   background-color: red;
   color: white;
-  width: 50%;
+}
+
+.save {
+  background-color: white;
+  color: black;
+}
+
+.svm {
+  margin-top: 1.5vh;
+}
+
+.vm {
+  margin-top: 3vh;
+}
+
+.mr {
+  margin-right: 1vw;
+}
+
+.time {
+  color: #d7e16e;
+}
+
+.exp {
+  color: #33caff;
+}
+
+.status {
+  color: white;
+  background: black;
+  border-radius: 5px;
+  padding: 0 5px;
+  font-weight: 500;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  background: #605c64;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.card__label {
+  color: white;
+  font-size: 1.7rem;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+
+  padding-left: 7px;
+  border-left: solid white 7px;
+}
+
+.card__content {
+  margin: 2vh 0;
+  border-left: dotted 7px white;
+  padding-left: 7px;
 }
