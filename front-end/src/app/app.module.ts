@@ -23,6 +23,9 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatInputModule} from '@angular/material/input';
 
+ import { EditorModule } from '@tinymce/tinymce-angular';
+import { PublicationComponent } from './publication/publication.component';
+
 
 @NgModule({
   declarations: [
@@ -39,6 +42,7 @@ import {MatInputModule} from '@angular/material/input';
     AccountComponent,
     PostComponent,
     ForumComponent,
+    PublicationComponent,
   ],
   imports: [
     BrowserModule,
@@ -47,7 +51,8 @@ import {MatInputModule} from '@angular/material/input';
     FormsModule,
     MatButtonModule,
     MatSnackBarModule,
-    MatInputModule
+    MatInputModule,
+    EditorModule
   ],
   providers: [],
   bootstrap: [AppComponent]

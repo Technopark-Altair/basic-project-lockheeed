@@ -10,6 +10,7 @@ import { SearchComponent } from './search/search.component';
 import { AuthComponent } from './auth/auth.component';
 import { RegComponent } from './reg/reg.component';
 import { AccountComponent } from './account/account.component';
+import { PublicationComponent } from './publication/publication.component';
 
 const routes: Routes = [
   {path: '', component: MainComponent},
@@ -20,6 +21,7 @@ const routes: Routes = [
   {path: 'registration', component: RegComponent},
   {path: 'autharization', component: AuthComponent},
   {path: 'account', component: AccountComponent},
+  {path: 'publication', component: PublicationComponent},
   {path: '**', redirectTo: 'not_found'},
   {path: 'not_found', component: NotfoundComponent}
 ];
