@@ -1,16 +1,34 @@
-<h1>TinyMCE 5 Angular Demo</h1>
-<editor
-  [init]="{
-    height: 500,
-    menubar: false,
-    plugins: [
-      'advlist autolink lists link image charmap print preview anchor',
-      'searchreplace visualblocks code fullscreen',
-      'insertdatetime media table paste code help wordcount'
-    ],
-    toolbar:
-      'undo redo | formatselect | bold italic backcolor | \
-      alignleft aligncenter alignright alignjustify | \
-      bullist numlist outdent indent | removeformat | help'
-  }"
-></editor>
+<div class="content">
+  <label>Создание статьи</label>
+  <div class="row">
+    <p class="subtitle">Заголовок статьи </p>
+    <input [(ngModel)]="articleTitle" class="input__line" type="text" name="" placeholder="">
+  </div>
+
+  <editor
+  [(ngModel)] = "articleContent"
+  class="vm"
+  (onInit) = "onTinyMCEInit()"
+    outputFormat="html"
+    [init]="{
+      base_url: '/tinymce',
+      suffix: '.min',
+      height: 500,
+      skin: 'oxide-dark',
+      content_css : 'dark',
+      menubar: true,
+      plugins: [
+        'advlist autolink lists link image charmap print preview anchor',
+        'searchreplace visualblocks code fullscreen',
+        'insertdatetime media table paste code help wordcount imagetools image mybutton'
+      ],
+      toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | link image',
+
+      image_title: true,
+      automatic_uploads: true,
+      file_picker_types: 'image'
+    }"
+  ></editor>
+
+  <button (click)="publicate()" mat-raised-button class="submit__button" >Опубликовать статью</button>
+</div>

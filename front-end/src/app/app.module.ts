@@ -16,6 +16,7 @@ import { RegComponent } from './reg/reg.component';
 import { AccountComponent } from './account/account.component';
 import { PostComponent } from './post/post.component';
 import { ForumComponent } from './forum/forum.component';
+import { PublicationComponent } from './publication/publication.component';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -23,8 +24,8 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatInputModule} from '@angular/material/input';
 
- import { EditorModule } from '@tinymce/tinymce-angular';
-import { PublicationComponent } from './publication/publication.component';
+import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
+
 
 
 @NgModule({
@@ -54,7 +55,9 @@ import { PublicationComponent } from './publication/publication.component';
     MatInputModule,
     EditorModule
   ],
-  providers: [],
+  providers: [
+    { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -21,7 +21,7 @@ export class ArticleComponent implements OnInit {
 
   constructor(private activateRoute: ActivatedRoute, private router: Router, private sanitizer: DomSanitizer, private requests: RequestsService, private snackBar: MatSnackBar){
         activateRoute.params.subscribe(params=>this.slug=params['slug']);
-        this.article = requests.getArticle(this.slug)["article"];
+        this.article = requests.getArticle(this.session_token, this.slug)["article"];
         this.article_content = sanitizer.bypassSecurityTrustHtml(this.article['content']);
         if ( !Object.keys(this.article).length ) {
           router.navigate(['/not_found']);
@@ -37,9 +37,13 @@ export class ArticleComponent implements OnInit {
   }
 
   rateUp() {
-    let res = this.requests.rateUp(this.session_token, 'article', this.slug);
+    let res = this.requests.rate(this.session_token, 'article', this.slug, 'up');
 
     if ( res['status'] == 'OK') {
+      if (this.article['rated']) { this.article['raiting'] += 2; }
+      else { this.article['raiting'] += 1; }
+      this.article['rated'] = 'up';
+
       this.spawnSnackBar('Голос засчитан!', 'valid');
     } else {
       this.spawnSnackBar(res['msg'], 'error');
@@ -47,9 +51,13 @@ export class ArticleComponent implements OnInit {
   }
 
   rateDown() {
-    let res = this.requests.rateDown(this.session_token, 'article', this.slug);
+    let res = this.requests.rate(this.session_token, 'article', this.slug, 'down');
 
     if ( res['status'] == 'OK') {
+      if (this.article['rated']) { this.article['raiting'] -= 2; } 
+      else { this.article['raiting'] -= 1; }
+      this.article['rated'] = 'down';
+
       this.spawnSnackBar('Голос засчитан!', 'valid');
     } else {
       this.spawnSnackBar(res['msg'], 'error');

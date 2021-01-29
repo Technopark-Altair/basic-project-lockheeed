@@ -10,7 +10,7 @@ from .models import Article
 from .models import Post
 from .models import User
 
-import base64, operator, os
+import base64, operator, os, uuid
 
 # Create your views here.
 
@@ -86,9 +86,23 @@ def getLastPosts(request):
 def getArticle(request):
     try:
         slug = request.GET['slug']
+
+
+
         article = Article.objects.get(slug=slug)
         article.views += 1
+
+        try:
+            if request.GET['token']:
+                id = getIDByToken(request.GET['token'])
+                rated = article.rated[id]
+            else:
+                rated = None
+        except KeyError:
+            rated = None
+
         article.save()
+
 
     except Article.DoesNotExist:
         response = {"status":"FAILED", "msg":"Статья не найдена!"}
@@ -100,6 +114,7 @@ def getArticle(request):
                 "updated_at":timezone.localtime(article.updated_at).strftime("%d-%m-%Y %H:%M"),
                 "content":article.content,
                 "raiting":article.raiting,
+                "rated":rated,
                 "views":article.views,
                 "type":article.type}
 
@@ -115,6 +130,7 @@ def autharization(request):
         password = request.GET['password']
 
         user = User.objects.get(username=login)
+        id = str(user.id)
     except KeyError:
         response = {"status":"FAILED", "msg":"Плохой запрос!"}
 
@@ -124,7 +140,7 @@ def autharization(request):
     else:
         if user.hash_pasword == password:
             token = createSessionToken()
-            addSessionToken(token, login)
+            addSessionToken(token, id)
             response = {"status":"OK", "session_token":token}
         else:
             response = {"status":"FAILED", "msg":"Неверный логин или пароль!"}
@@ -187,8 +203,8 @@ def registration(request):
 
 def getProfileAvatar(request):
     try:
-        login = getLoginByToken(request.GET['token'])
-        imageName = User.objects.get(username=login).avatar.name
+        id = getIDByToken(request.GET['token'])
+        imageName = User.objects.get(id=uuid.UUID(id)).avatar.name
         imageFormat = imageName.split('.')[1]
 
         try:
@@ -210,8 +226,8 @@ def getProfileAvatar(request):
 
 def getProfileInfo(request):
     try:
-        login = getLoginByToken(request.GET['token'])
-        profile = User.objects.get(username=login)
+        id = getIDByToken(request.GET['token'])
+        profile = User.objects.get(id=uuid.UUID(id))
         imageName = profile.avatar.name
         imageFormat = imageName.split('.')[1]
 
@@ -254,58 +270,45 @@ def exit(request):
     response["Access-Control-Allow-Origin"] = "*"
     return response
 
-def rateUp(request):
+def rate(request):
     try:
-        login = getLoginByToken(request.GET['token'])
-        if request.GET['type'] == 'article':
-            try:
-                article = Article.objects.get(slug=request.GET['slug'])
-                article.raiting += 1
-                article.save()
-                response = {"status":"OK"}
+        profile_id = getIDByToken(request.GET['token'])
 
-            except Article.DoesNotExist:
-                response = {"status":"FAILED", "msg":"Такой статьи не существует!"}
+        if request.GET['mark'] in ['up', 'down']:
 
-        elif request.GET['type'] == 'post':
-            try:
-                post = Post.objects.get(slug=request.GET['slug'])
-                post.raiting += 1
-                post.save()
-                response = {"status":"OK"}
+            if request.GET['type'] == 'article':
+                try:
+                    article = Article.objects.get(slug=request.GET['slug'])
 
-            except Article.DoesNotExist:
-                response = {"status":"FAILED", "msg":"Такого поста не существует!"}
+                    if profile_id not in article.rated:
+                        if request.GET['mark'] == 'up':
+                            article.raiting += 1
+                        else:
+                            article.raiting -= 1
 
-    except KeyError:
-        response = {"status":"FAILED", "msg":"Неверный токен!"}
+                        article.rated[profile_id] = request.GET['mark']
+                        article.save()
+                        response = {"status":"OK"}
 
-    response = JsonResponse(response)
-    response["Access-Control-Allow-Origin"] = "*"
-    return response
+                    elif article.rated[profile_id] != request.GET['mark']:
+                        if request.GET['mark'] == 'up':
+                            article.raiting += 2
+                        else:
+                            article.raiting -= 2
 
-def rateDown(request):
-    try:
-        login = getLoginByToken(request.GET['token'])
-        if request.GET['type'] == 'article':
-            try:
-                article = Article.objects.get(slug=request.GET['slug'])
-                article.raiting -= 1
-                article.save()
-                response = {"status":"OK"}
+                        article.rated[profile_id] = request.GET['mark']
+                        article.save()
+                        response = {"status":"OK"}
 
-            except Article.DoesNotExist:
-                response = {"status":"FAILED", "msg":"Такой статьи не существует!"}
+                    elif article.rated[profile_id] == request.GET['mark']:
+                        response = {"status":"FAILED", "msg":"Голос уже засчитан!"}
 
-        elif request.GET['type'] == 'post':
-            try:
-                post = Post.objects.get(slug=request.GET['slug'])
-                post.raiting -= 1
-                post.save()
-                response = {"status":"OK"}
 
-            except Article.DoesNotExist:
-                response = {"status":"FAILED", "msg":"Такого поста не существует!"}
+                except Article.DoesNotExist:
+                    response = {"status":"FAILED", "msg":"Такой статьи не существует!"}
+
+        else:
+            response = {"status":"FAILED", "msg":"Неверный запрос!"}
 
     except KeyError:
         response = {"status":"FAILED", "msg":"Неверный токен!"}
@@ -316,8 +319,8 @@ def rateDown(request):
 
 def updateAvatar(request):
     try:
-        login = getLoginByToken(request.GET['token'])
-        profile = User.objects.get(username=login)
+        id = getIDByToken(request.GET['token'])
+        profile = User.objects.get(id=uuid.UUID(id))
         imageName = profile.avatar.name
 
         try:
@@ -351,8 +354,8 @@ def updateAvatar(request):
 
 def updatePassword(request):
     try:
-        login = getLoginByToken(request.GET['token'])
-        profile = User.objects.get(username=login)
+        id = getIDByToken(request.GET['token'])
+        profile = User.objects.get(id=uuid.UUID(id))
 
         if profile.hash_pasword == request.GET['current']:
             profile.hash_pasword = request.GET['new']
@@ -389,6 +392,36 @@ def search(request):
                      "type":element.type})
 
     response = {"status":"OK", "topics":body}
+
+    response = JsonResponse(response)
+    response["Access-Control-Allow-Origin"] = "*"
+    return response
+
+def publicateArticle(request):
+    try:
+        id = getIDByToken(request.GET['token'])
+        title = request.GET['title']
+        content = request.body.decode("utf-8")
+
+        if title and content:
+            try:
+                Article.objects.create(
+                            slug=createSlug(title),
+                            title=title,
+                            author=login,
+                            content=content
+                            )
+
+                response = {"status":"OK"}
+
+            except django.db.utils.IntegrityError:
+                response = {"status":"FAILED", "msg":"Статья с таким заголовком уже существует!"}
+
+        else:
+            response = {"status":"FAILED", "msg":"Поля не могут быть пустыми!"}
+
+    except KeyError:
+        response = {"status":"FAILED", "msg":"Неверный токен!"}
 
     response = JsonResponse(response)
     response["Access-Control-Allow-Origin"] = "*"

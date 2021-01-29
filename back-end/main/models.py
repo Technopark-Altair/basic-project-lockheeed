@@ -23,10 +23,11 @@ class User(models.Model):
         ordering = ["registered_at"]
 
 class Article(models.Model):
-    title = models.CharField(max_length=62, null=False, verbose_name="Заголовок")
+    title = models.CharField(max_length=62, unique=True, null=False, verbose_name="Заголовок")
     slug = models.SlugField(max_length=124, unique=True, null=False, default="")
     type = models.CharField(default="article", max_length=7)
     raiting = models.IntegerField(default=0)
+    rated = models.JSONField(default=dict, blank=True, verbose_name="Поставленные оценки")
     author = models.CharField(max_length=24, null=False, verbose_name="Автор")
     content = models.TextField(blank=True, verbose_name="Контент")
     updated_at = models.DateTimeField(auto_now_add=True, verbose_name="Обновлено")

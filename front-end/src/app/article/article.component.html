@@ -43,11 +43,13 @@
   <div class="row fw vm">
     <div class="info__container">
       <div class="row mr">
-        <button (click)="rateUp()" class="rate__up icon" type="button" name="button"></button>
+        <button (click)="rateUp()" class="rate__up icon" type="button" name="button"
+        [ngStyle]="{'border-bottom': (article['rated'] == 'up') ? 'solid #ffffff 1px' : 'none'}"></button>
         <p *ngIf="article['raiting'] > 0" class="subtitle" style="color:#51df00;">{{article['raiting']}}</p>
         <p *ngIf="article['raiting'] == 0" class="subtitle" style="color:#b5b5b5;">{{article['raiting']}}</p>
         <p *ngIf="article['raiting'] < 0" class="subtitle" style="color:#e65e19;">{{article['raiting'] * -1}}</p>
-        <button (click)="rateDown()" class="rate__down icon" type="button" name="button"></button>
+        <button (click)="rateDown()" class="rate__down icon" type="button" name="button"
+        [ngStyle]="{'border-bottom': (article['rated'] == 'down') ? 'solid #ffffff 1px' : 'none'}"></button>
       </div>
 
       <div class="row">

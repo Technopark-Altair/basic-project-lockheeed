@@ -23,6 +23,12 @@ p {
   margin: 0;
 }
 
+button,
+input,
+a {
+  outline: none;
+}
+
 .error.mat-snack-bar-container {
   background: red;
   color: white;

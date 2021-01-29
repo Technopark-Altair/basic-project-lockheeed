@@ -1,4 +1,6 @@
 import random, json, os.path
+from transliterate import translit
+
 from django.conf import settings
 
 TOKENS_FILE = 'C:\\Users\\mrart\\Desktop\\cybersafe\\back-end\\session_tokens.json'
@@ -13,13 +15,13 @@ def readSessionTokens():
         json.dump({}, open(TOKENS_FILE, "w"))
         return {}
 
-def addSessionToken(session_token, login):
+def addSessionToken(session_token, uid):
     session_tokens = readSessionTokens()
-    session_tokens[session_token] = login
+    session_tokens[session_token] = uid
     json.dump(session_tokens, open(TOKENS_FILE, "w"))
 
-def getLoginByToken(token):
-    return readSessionTokens()[token]
+def getIDByToken(uid):
+    return readSessionTokens()[uid]
 
 def removeToken(token):
     session_tokens = readSessionTokens()
@@ -33,10 +35,10 @@ def removeToken(token):
 
     json.dump(session_tokens, open(TOKENS_FILE, "w"))
 
-def removeTokenByLogin(login):
+def removeTokenByID(uid):
     session_tokens = readSessionTokens()
     for t, l in session_tokens.copy().items():
-        if l == login:
+        if l == uid:
             del session_tokens[t]
 
     json.dump(session_tokens, open(TOKENS_FILE, "w"))
@@ -46,3 +48,6 @@ def parseImage(image_body):
     print(format)
     body = image_body.split(b';base64,')[1]
     return format, body
+
+def createSlug(title):
+    return translit(title.replace(" ", "_"), "ru", reversed=True)

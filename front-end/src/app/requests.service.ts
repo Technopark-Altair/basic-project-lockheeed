@@ -38,8 +38,8 @@ export class RequestsService {
     return JSON.parse( this.makeRequest('GET', 'get_last_posts/') );
   }
 
-  getArticle(slug): JSON {
-    let params = 'slug=' + slug
+  getArticle(session_token = "", slug): JSON {
+    let params = 'token=' + session_token + '&slug=' + slug
     return JSON.parse( this.makeRequest('GET', 'get_article/', params) );
   }
 
@@ -68,14 +68,14 @@ export class RequestsService {
     return JSON.parse( this.makeRequest('GET', 'get_profile_picture/', params) );
   }
 
-  rateUp(session_token, type, slug) {
-    let params = 'token=' + session_token + '&type=' + type + '&slug=' + slug;
-    return JSON.parse( this.makeRequest('POST', 'rate_up/', params) );
+  sendArticle(session_token, articleTitle, articleContent): JSON {
+    let params = 'token=' + session_token + '&title=' + articleTitle;
+    return JSON.parse( this.makeRequest('POST', 'publicate_article/', params, articleContent) );
   }
 
-  rateDown(session_token, type, slug) {
-    let params = 'token=' + session_token + '&type=' + type + '&slug=' + slug;
-    return JSON.parse( this.makeRequest('POST', 'rate_down/', params) );
+  rate(session_token, type, slug, mark) {
+    let params = 'token=' + session_token + '&type=' + type + '&slug=' + slug + '&mark=' + mark;
+    return JSON.parse( this.makeRequest('POST', 'rate/', params) );
   }
 
   updateAvatar(session_token, base64Image): JSON {

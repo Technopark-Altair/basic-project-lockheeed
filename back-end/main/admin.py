@@ -6,7 +6,7 @@ from .models import Post
 # Register your models here.
 
 class ArticlesAdmin(admin.ModelAdmin):
-    list_display = ('title', 'slug', 'author', 'content', 'updated_at', 'created_at', 'hidden')
+    list_display = ('title', 'slug', 'author', 'updated_at', 'created_at', 'hidden')
 
 class PostsAdmin(admin.ModelAdmin):
     list_display = ('title', 'slug', 'type', 'author', 'answers', 'updated_at', 'created_at', 'hidden')
