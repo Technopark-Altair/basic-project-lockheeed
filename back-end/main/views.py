@@ -10,7 +10,7 @@ from .models import Article
 from .models import Post
 from .models import User
 
-import base64, operator, os, uuid
+import base64, operator, os, uuid, time
 
 # Create your views here.
 
@@ -86,9 +86,6 @@ def getLastPosts(request):
 def getArticle(request):
     try:
         slug = request.GET['slug']
-
-
-
         article = Article.objects.get(slug=slug)
         article.views += 1
 
@@ -103,6 +100,28 @@ def getArticle(request):
 
         article.save()
 
+        comments = []
+        print(article.comments)
+        for comment in article.comments['comments']:
+            user = User.objects.get(id=uuid.UUID(comment['author_id']))
+            imageName = user.avatar.name
+            imageFormat = imageName.split('.')[1]
+
+            try:
+                avatar = open(settings.MEDIA_ROOT + f"\\avatars\\{imageName}", "rb").read()
+
+            except FileNotFoundError:
+                avatar = ""
+
+            else:
+                avatar = b"data:image/" + imageFormat.encode('utf-8') + b";base64," + base64.b64encode(avatar)
+
+            comments.append({
+                "author":user.username,
+                "avatar":avatar.decode("utf-8"),
+                "content":comment['content']
+            })
+
 
     except Article.DoesNotExist:
         response = {"status":"FAILED", "msg":"Статья не найдена!"}
@@ -116,6 +135,8 @@ def getArticle(request):
                 "raiting":article.raiting,
                 "rated":rated,
                 "views":article.views,
+                "comments":comments,
+                "commentsCount":len(article.comments['comments']),
                 "type":article.type}
 
         response = {"status":"OK", "article":body}
@@ -128,8 +149,9 @@ def autharization(request):
     try:
         login = request.GET['login']
         password = request.GET['password']
-
+        start = time.time()
         user = User.objects.get(username=login)
+        print(time.time() - start)
         id = str(user.id)
     except KeyError:
         response = {"status":"FAILED", "msg":"Плохой запрос!"}
@@ -139,6 +161,9 @@ def autharization(request):
 
     else:
         if user.hash_pasword == password:
+            if getTokensCountByID(id) >= 2:
+                removeTokenByID(id)
+                
             token = createSessionToken()
             addSessionToken(token, id)
             response = {"status":"OK", "session_token":token}
@@ -165,22 +190,23 @@ def registration(request):
     except User.DoesNotExist:
         try:
              User.objects.get(email=email)
-        except User.DoesNotExist:
 
-            User.objects.create(
+        except User.DoesNotExist:
+            profile = User.objects.create(
                 name = name,
                 username = login,
                 email = email,
                 hash_pasword = hash_pasword,
             )
+            id = str(profile.id)
 
             request_body = request.body
             if request_body:
-                profile = User.objects.get(username=login)
-                uid = str(profile.id)
+                id = str(profile.id)
                 imgFormat, image = parseImage(request.body)
-                open(settings.MEDIA_ROOT + f"\\avatars\\{uid}.{imgFormat}", "wb").write(base64.b64decode(image))
-                avatar = uid + '.' + imgFormat
+                open(settings.MEDIA_ROOT + f"\\avatars\\{id}.{imgFormat}", "wb").write(base64.b64decode(image))
+                avatar = id + '.' + imgFormat
+
             else:
                 avatar = None
 
@@ -188,7 +214,7 @@ def registration(request):
             profile.save()
 
             token = createSessionToken()
-            addSessionToken(token, login)
+            addSessionToken(token, id)
             response = {"status":"OK", "session_token":token}
 
         else:
@@ -218,7 +244,7 @@ def getProfileAvatar(request):
             response = {"status":"OK", "image":image.decode("utf-8")}
 
     except KeyError:
-        response = {"status":"FAILED", "msg":"Неверный токен!"}
+        response = {"status":"FAILED", "msg":"Необходимо авторизироваться!"}
 
     response = JsonResponse(response)
     response["Access-Control-Allow-Origin"] = "*"
@@ -249,7 +275,7 @@ def getProfileInfo(request):
         }}
 
     except KeyError:
-        response = {"status":"FAILED", "msg":"Неверный токен!"}
+        response = {"status":"FAILED", "msg":"Необходимо авторизироваться!"}
 
     response = JsonResponse(response)
     response["Access-Control-Allow-Origin"] = "*"
@@ -264,7 +290,7 @@ def exit(request):
             response = {"status":"FAILED", "msg":"Упс... Что-то пошло не так."}
 
     except KeyError:
-        response = {"status":"FAILED", "msg":"Неверный токен!"}
+        response = {"status":"FAILED", "msg":"Необходимо авторизироваться!"}
 
     response = JsonResponse(response)
     response["Access-Control-Allow-Origin"] = "*"
@@ -311,11 +337,39 @@ def rate(request):
             response = {"status":"FAILED", "msg":"Неверный запрос!"}
 
     except KeyError:
-        response = {"status":"FAILED", "msg":"Неверный токен!"}
+        response = {"status":"FAILED", "msg":"Необходимо авторизироваться!"}
 
     response = JsonResponse(response)
     response["Access-Control-Allow-Origin"] = "*"
     return response
+
+def sendComment(request):
+    try:
+        profile_id = str(getIDByToken(request.GET['token']))
+        if request.GET['comment'] and request.GET['comment'] != 'undefined':
+            if request.GET['type'] == 'article':
+                try:
+                    article = Article.objects.get(slug=request.GET['slug'])
+                    article.comments['comments'] = [{
+                        "author_id": profile_id,
+                        "content": request.GET['comment']
+                    }] + article.comments['comments']
+
+                    article.save()
+                    response = {"status":"OK"}
+
+                except Article.DoesNotExist:
+                    response = {"status":"FAILED", "msg":"Такой статьи не существует!"}
+        else:
+            response = {"status":"FAILED", "msg":"Комментарий не может быть пустым!"}
+
+    except KeyError:
+        response = {"status":"FAILED", "msg":"Необходимо авторизироваться!"}
+
+    response = JsonResponse(response)
+    response["Access-Control-Allow-Origin"] = "*"
+    return response
+
 
 def updateAvatar(request):
     try:
@@ -343,7 +397,7 @@ def updateAvatar(request):
         response = {"status":"OK"}
 
     except KeyError:
-        response = {"status":"FAILED", "msg":"Неверный токен!"}
+        response = {"status":"FAILED", "msg":"Необходимо авторизироваться!"}
 
     except User.DoesNotExist:
         response = {"status":"FAILED", "msg":"Упс... Что-то пошло не так."}
@@ -366,7 +420,7 @@ def updatePassword(request):
             response = {"status":"FAILED", "msg":"Неверный пароль!"}
 
     except KeyError:
-        response = {"status":"FAILED", "msg":"Неверный токен!"}
+        response = {"status":"FAILED", "msg":"Необходимо авторизироваться!"}
 
     except User.DoesNotExist:
         response = {"status":"FAILED", "msg":"Упс... Что-то пошло не так."}
@@ -400,6 +454,7 @@ def search(request):
 def publicateArticle(request):
     try:
         id = getIDByToken(request.GET['token'])
+        username = User.objects.get(id=uuid.UUID(id)).username
         title = request.GET['title']
         content = request.body.decode("utf-8")
 
@@ -408,8 +463,9 @@ def publicateArticle(request):
                 Article.objects.create(
                             slug=createSlug(title),
                             title=title,
-                            author=login,
-                            content=content
+                            author=username,
+                            content=content,
+                            comments={"comments":[]}
                             )
 
                 response = {"status":"OK"}
@@ -421,7 +477,7 @@ def publicateArticle(request):
             response = {"status":"FAILED", "msg":"Поля не могут быть пустыми!"}
 
     except KeyError:
-        response = {"status":"FAILED", "msg":"Неверный токен!"}
+        response = {"status":"FAILED", "msg":"Необходимо авторизироваться!"}
 
     response = JsonResponse(response)
     response["Access-Control-Allow-Origin"] = "*"

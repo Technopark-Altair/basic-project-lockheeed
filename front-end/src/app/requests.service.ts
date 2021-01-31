@@ -78,6 +78,11 @@ export class RequestsService {
     return JSON.parse( this.makeRequest('POST', 'rate/', params) );
   }
 
+  sendComment(session_token, type, slug, comment) {
+    let params = 'token=' + session_token + '&type=' + type + '&slug=' + slug + '&comment=' + comment;
+    return JSON.parse( this.makeRequest('POST', 'send_comment/', params) );
+  }
+
   updateAvatar(session_token, base64Image): JSON {
     let params = 'token=' + session_token;
     return JSON.parse( this.makeRequest('POST', 'update_avatar/', params, base64Image) );

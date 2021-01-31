@@ -11,7 +11,7 @@ class User(models.Model):
     experience = models.IntegerField(default=0)
     id = models.UUIDField(default=uuid.uuid4, editable=False, verbose_name="UUID")
     hash_pasword = models.CharField(max_length=32, null=False, verbose_name="Hash пароль")
-    registered_at = models.DateTimeField(auto_now=True, verbose_name="Зарегистрирован")
+    registered_at = models.DateTimeField(auto_now_add=True, verbose_name="Зарегистрирован")
     banned = models.BooleanField(default=False)
 
     def __str__(self):
@@ -27,13 +27,15 @@ class Article(models.Model):
     slug = models.SlugField(max_length=124, unique=True, null=False, default="")
     type = models.CharField(default="article", max_length=7)
     raiting = models.IntegerField(default=0)
-    rated = models.JSONField(default=dict, blank=True, verbose_name="Поставленные оценки")
     author = models.CharField(max_length=24, null=False, verbose_name="Автор")
-    content = models.TextField(blank=True, verbose_name="Контент")
-    updated_at = models.DateTimeField(auto_now_add=True, verbose_name="Обновлено")
-    created_at = models.DateTimeField(auto_now=True, verbose_name="Создано")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Обновлено")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Создано")
     views = models.PositiveIntegerField(default=0)
     hidden = models.BooleanField(default=False)
+    content = models.TextField(blank=True, verbose_name="Контент")
+    rated = models.JSONField(default=dict, blank=True, verbose_name="Поставленные оценки")
+    comments = models.JSONField(default=dict, blank=False, verbose_name="Комментарии")
+
 
     def __str__(self):
         return self.title
@@ -49,11 +51,13 @@ class Post(models.Model):
     type = models.CharField(max_length=20, null=False, verbose_name="Тип") # question, discussion
     raiting = models.IntegerField(default=0)
     author = models.CharField(max_length=24, null=False, verbose_name="Автор")
-    answers = models.JSONField(default=dict, blank=True, verbose_name="Ответы")
     updated_at = models.DateTimeField(auto_now_add=True, verbose_name="Обновлено")
     created_at = models.DateTimeField(auto_now=True, verbose_name="Создано")
     views = models.PositiveIntegerField(default=0)
     hidden = models.BooleanField(default=False)
+    answers = models.JSONField(default=dict, blank=True, verbose_name="Ответы")
+    comments = models.JSONField(default=dict, blank=False, verbose_name="Комментарии")
+
 
     def __str__(self):
         return self.title

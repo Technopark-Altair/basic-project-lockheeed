@@ -8,7 +8,7 @@
 
       <div *ngIf="article['raiting'] > 0" class="row mr">
         <p class="subtitle">Рейтинг:</p>
-        <p class="subtitle" style="color:#51df00;">{{article['raiting']}}</p>
+        <p class="subtitle raiting" style="color:#51df00;">{{article['raiting']}}</p>
         <img class="icon" src="assets/green_arrow.svg" alt="">
       </div>
 
@@ -37,19 +37,19 @@
   </header>
 
   <hr>
-  <p [innerHTML]="article_content" class="article__content">
-  </p>
+  <div [innerHTML]="article_content" class="article__content">
+  </div>
 
   <div class="row fw vm">
-    <div class="info__container">
+    <div class="info__container lower">
       <div class="row mr">
         <button (click)="rateUp()" class="rate__up icon" type="button" name="button"
-        [ngStyle]="{'border-bottom': (article['rated'] == 'up') ? 'solid #ffffff 1px' : 'none'}"></button>
-        <p *ngIf="article['raiting'] > 0" class="subtitle" style="color:#51df00;">{{article['raiting']}}</p>
-        <p *ngIf="article['raiting'] == 0" class="subtitle" style="color:#b5b5b5;">{{article['raiting']}}</p>
-        <p *ngIf="article['raiting'] < 0" class="subtitle" style="color:#e65e19;">{{article['raiting'] * -1}}</p>
+        [ngStyle]="{'background': (article['rated'] == 'up') ? 'url(/assets/green_arrow.svg)' : 'url(/assets/gray_up_arrow.svg)'}"></button>
+        <p *ngIf="article['raiting'] > 0" class="subtitle  raiting" style="color:#51df00;">{{article['raiting']}}</p>
+        <p *ngIf="article['raiting'] == 0" class="subtitle raiting" style="color:#b5b5b5;">{{article['raiting']}}</p>
+        <p *ngIf="article['raiting'] < 0" class="subtitle raiting" style="color:#e65e19;">{{article['raiting'] * -1}}</p>
         <button (click)="rateDown()" class="rate__down icon" type="button" name="button"
-        [ngStyle]="{'border-bottom': (article['rated'] == 'down') ? 'solid #ffffff 1px' : 'none'}"></button>
+        [ngStyle]="{'background': (article['rated'] == 'down') ? 'url(/assets/red_arrow.svg)' : 'url(/assets/gray_down_arrow.svg)'}"></button>
       </div>
 
       <div class="row">
@@ -58,3 +58,43 @@
       </div>
     </div>
   </div>
+
+  <div *ngIf="online" class="row fw vm">
+    <div class="">
+      <p class="subtitle">Оставьте комментарий к статье: </p>
+      <div class="comment__form">
+        <div class="avatar__filed">
+          <img class="avatar" src="{{user_picture}}" alt="">
+          <p class="subtitle author">{{username}}</p>
+        </div>
+        <div class="delimiter"></div>
+        <div class="text__filed">
+          <textarea [(ngModel)]="userComment"></textarea>
+          <button (click)="sendComment()" class="send__button" type="button" name="button">Отправить</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!online" class="note">
+    <p class="text">Для комментирования необходимо быть авторизированным на сайте</p>
+    <a routerLink="/autharization">
+      <button mat-raised-button class="submit__button">Авторизация</button>
+    </a>
+  </div>
+
+  <label class="vm">{{ article['commentsCount'] }} {{correctWordForm}}</label>
+
+  <div *ngFor="let comment of article['comments']" class="comment__form svm">
+    <div class="avatar__filed">
+      <img class="avatar" src="{{comment['avatar']}}" alt="">
+      <p class="subtitle author">{{comment['author']}}</p>
+    </div>
+
+    <div class="delimiter"></div>
+    <div class="text__filed">
+      <textarea value="{{comment['content']}}" class="disabled" readonly></textarea>
+    </div>
+  </div>
+
+</div>

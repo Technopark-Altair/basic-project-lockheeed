@@ -28,12 +28,11 @@ def removeToken(token):
 
     try:
         del session_tokens[token]
+        json.dump(session_tokens, open(TOKENS_FILE, "w"))
     except KeyError:
         return False
     else:
         return True
-
-    json.dump(session_tokens, open(TOKENS_FILE, "w"))
 
 def removeTokenByID(uid):
     session_tokens = readSessionTokens()
@@ -42,6 +41,14 @@ def removeTokenByID(uid):
             del session_tokens[t]
 
     json.dump(session_tokens, open(TOKENS_FILE, "w"))
+
+def getTokensCountByID(uid):
+    count = 0
+    session_tokens = readSessionTokens()
+    for t, l in session_tokens.copy().items():
+        if l == uid:
+            count += 1
+    return count
 
 def parseImage(image_body):
     format = image_body.split(b'data:image/')[1].split(b';')[0].decode('utf-8')

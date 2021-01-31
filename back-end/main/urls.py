@@ -18,5 +18,6 @@ urlpatterns = [
     path('search/', search),
     path('update_avatar/', csrf_exempt(updateAvatar)),
     path('update_password/', csrf_exempt(updatePassword)),
-    path('publicate_article/', csrf_exempt(publicateArticle))
+    path('publicate_article/', csrf_exempt(publicateArticle)),
+    path('send_comment/', csrf_exempt(sendComment))
 ]

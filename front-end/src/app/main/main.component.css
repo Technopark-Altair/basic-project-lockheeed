@@ -44,7 +44,6 @@ label::after {
 .topics {
   display: flex;
   flex-direction: row;
-  margin-bottom: 10vh;
 }
 
 .row {
