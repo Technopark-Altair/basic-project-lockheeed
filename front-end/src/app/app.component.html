@@ -20,7 +20,7 @@
 
   <div class="search__form" action="search">
     <button (click)="search()" class="search__button" type="submit" [disabled]="!search_query"></button>
-    <input (change)="search()" class="search__input" type="text" [(ngModel)]="search_query" >
+    <input (keydown.enter)="search()" class="search__input" type="text" [(ngModel)]="search_query" >
   </div>
 </nav>
 
@@ -28,5 +28,5 @@
   <router-outlet></router-outlet>
 </div>
 
-<footer class="footer">
-</footer>
+<!-- <footer class="footer">
+</footer> -->

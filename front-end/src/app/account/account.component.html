@@ -36,7 +36,6 @@
             <p *ngIf="data['access'] == 0" class="subtitle status" style="background: gray;">Пользователь</p>
             <p *ngIf="data['access'] == 1" class="subtitle status" style="background: green">Модератор</p>
             <p *ngIf="data['access'] == 2" class="subtitle status" style="background: #7071ba">Админ</p>
-            <p *ngIf="!data['banned']" class="subtitle status" style="background: #52e32e;">Активен</p>
             <p *ngIf="data['banned']" class="subtitle status" style="background: #e65e19;">Забанен</p>
           </div>
         </div>
@@ -47,11 +46,11 @@
         <div class="card__content">
           <div class="line">
             <p class="subtitle">Текущий пароль</p>
-            <input class="input__line" type="password" name="" [(ngModel)]="current_password" >
+            <input (keydown.enter)="updatePassword()" class="input__line" type="password" name="" [(ngModel)]="current_password" >
           </div>
           <div class="line svm">
             <p class="subtitle">Новый пароль</p>
-            <input class="input__line" type="password" name="" [(ngModel)]="new_password" >
+            <input (keydown.enter)="updatePassword()" class="input__line" type="password" name="" [(ngModel)]="new_password" >
           </div>
         </div>
       </div>

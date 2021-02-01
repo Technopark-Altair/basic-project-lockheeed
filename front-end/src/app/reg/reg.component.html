@@ -6,23 +6,23 @@
       <div class="twin__input">
         <div class="line">
           <label>*Логин</label>
-          <input class="twin input__line" type="text" name="" [(ngModel)]="login" placeholder="">
+          <input (keydown.enter)="registration()" class="twin input__line" type="text" name="" [(ngModel)]="login" placeholder="">
         </div>
 
         <div class="line">
           <label>*Имя</label>
-          <input class="twin input__line" type="text" name="" [(ngModel)]="name" placeholder="">
+          <input (keydown.enter)="registration()" class="twin input__line" type="text" name="" [(ngModel)]="name" placeholder="">
         </div>
       </div>
 
       <div class="line">
         <label>*Почта</label>
-        <input class="input__line" type="email" name="" [(ngModel)]="email" placeholder="example@mail.com">
+        <input (keydown.enter)="registration()" class="input__line" type="email" name="" [(ngModel)]="email" placeholder="example@mail.com">
       </div>
 
       <div class="line">
         <label>*Пароль</label>
-        <input class="input__line" type="password" name="" [(ngModel)]="password" placeholder="">
+        <input (keydown.enter)="registration()" class="input__line" type="password" name="" [(ngModel)]="password" placeholder="">
       </div>
 
       <div class="line">

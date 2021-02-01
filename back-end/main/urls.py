@@ -21,5 +21,6 @@ urlpatterns = [
     path('update_password/', csrf_exempt(updatePassword)),
     path('publicate_article/', csrf_exempt(publicateArticle)),
     path('send_comment/', csrf_exempt(sendComment)),
-    path('is_a_valid_token/', csrf_exempt(isAVaildToken))
+    path('is_a_valid_token/', csrf_exempt(isAVaildToken)),
+    path('get_current_time/', getCurrentTime)
 ]

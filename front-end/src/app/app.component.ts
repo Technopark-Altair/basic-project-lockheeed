@@ -44,7 +44,9 @@ export class AppComponent {
   }
 
   search() {
-    this.router.navigate(["/search", {'query':this.search_query}]);
+    if (this.search_query) {
+      this.router.navigate(["/search", {'query':this.search_query}]);
+    }
   }
 
   ngOnInit() {

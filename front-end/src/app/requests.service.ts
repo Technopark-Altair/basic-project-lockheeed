@@ -103,6 +103,10 @@ export class RequestsService {
     return JSON.parse( this.makeRequest('POST', 'update_password/', params) );
   }
 
+  getCurrentTime() {
+    return JSON.parse( this.makeRequest('GET', 'get_current_time/') );
+  }
+
   exit(session_token): JSON {
     let params = 'token=' + session_token;
     return JSON.parse( this.makeRequest('POST', 'exit/', params) );

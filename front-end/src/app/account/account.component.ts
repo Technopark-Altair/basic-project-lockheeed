@@ -32,6 +32,12 @@ export class AccountComponent implements OnInit {
     });
   }
 
+  checkInputData() {
+    if ( this.current_password.length <= 7 ) { this.spawnSnackBar('Длинна пароля должна быть от 8 символов!', 'error'); return false; }
+    if ( this.new_password.length <= 7 ) { this.spawnSnackBar('Длинна пароля должна быть от 8 символов!', 'error'); return false; }
+    return true;
+  }
+
   handleInputFile(file: FileList){
      var fileToUpload = file.item(0);
 
@@ -77,15 +83,17 @@ export class AccountComponent implements OnInit {
   }
 
   updatePassword() {
-    let res = this.requests.updatePassword(this.session_token, this.current_password, this.new_password);
+    if ( this.checkInputData() ) {
+      let res = this.requests.updatePassword(this.session_token, this.current_password, this.new_password);
 
-    if ( res['status'] == 'OK' ) {
-      this.spawnSnackBar('Пароль успешно сменён!', 'valid');
+      if ( res['status'] == 'OK' ) {
+        this.spawnSnackBar('Пароль успешно сменён!', 'valid');
 
-      this.current_password = "";
-      this.new_password = "";
-    } else {
-      this.spawnSnackBar(res['msg'], 'error');
+        this.current_password = "";
+        this.new_password = "";
+      } else {
+        this.spawnSnackBar(res['msg'], 'error');
+      }
     }
   }
 

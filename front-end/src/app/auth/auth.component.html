@@ -4,12 +4,12 @@
     <div class="input__form">
       <div class="line">
         <label>*Логин</label>
-        <input class="input__line" type="text" name="" [(ngModel)]="login" placeholder="">
+        <input (keydown.enter)="autharization()" class="input__line" type="text" name="" [(ngModel)]="login" placeholder="">
       </div>
 
       <div class="line">
         <label>*Пароль</label>
-        <input class="input__line" type="password" name="" [(ngModel)]="password" placeholder="">
+        <input (keydown.enter)="autharization()" class="input__line" type="password" name="" [(ngModel)]="password" placeholder="">
       </div>
     </div>
 

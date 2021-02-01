@@ -36,17 +36,21 @@ export class ArticleComponent implements OnInit {
         }
 
         this.article_content = sanitizer.bypassSecurityTrustHtml(this.article['content']);
+        this.checkDeclination();
 
-        let strCommentsCount = this.article['commentsCount'].toString();
-        let lastNum = parseInt(strCommentsCount.charAt(strCommentsCount.length - 1));
-        if ( lastNum == 1 ) {
-          this.correctWordForm = "Комментарий";
-        } else if ( 1 < lastNum && lastNum < 5)  {
-          this.correctWordForm = "Комментария";
-        } else {
-          this.correctWordForm = "Комментариев";
-        }
     }
+
+  checkDeclination() {
+    let strCommentsCount = this.article['commentsCount'].toString();
+    let lastNum = parseInt(strCommentsCount.charAt(strCommentsCount.length - 1));
+    if ( lastNum == 1 ) {
+      this.correctWordForm = "Комментарий";
+    } else if ( 1 < lastNum && lastNum < 5)  {
+      this.correctWordForm = "Комментария";
+    } else {
+      this.correctWordForm = "Комментариев";
+    }
+  }
 
   spawnSnackBar(error_text, panel_class) {
     this.snackBar.open(error_text, "", {
@@ -106,13 +110,16 @@ export class ArticleComponent implements OnInit {
     if ( res['status'] == 'OK' ) {
       this.article["comments"]["data"].unshift({
         "author":this.username,
-        "content":this.userComment
+        "content":this.userComment,
+        "timestamp":this.requests.getCurrentTime()['timestamp']
       })
 
       this.article["comments"]["avatars"][this.username] = this.user_picture;
       this.article["commentsCount"] += 1;
       this.userComment = "";
+      this.checkDeclination();
       this.spawnSnackBar('Комментарий успешно отправлен!', 'valid');
+      
     } else {
       this.spawnSnackBar(res['msg'], 'error');
     }

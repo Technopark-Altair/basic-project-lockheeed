@@ -10,7 +10,7 @@ from .models import Article
 from .models import Post
 from .models import User
 
-import base64, operator, os, uuid, time
+import base64, operator, os, uuid, time, datetime, pytz
 
 # Create your views here.
 
@@ -19,12 +19,13 @@ def index(request):
     return JsonResponse(response)
 
 def getTop(request):
-    articles = Article.objects.filter(hidden=False).order_by('-raiting', '-created_at')[:5]
-    posts = Post.objects.filter(hidden=False).order_by('-raiting', '-created_at')[:5]
+    articles = Article.objects.filter(hidden=False).order_by('-raiting', '-created_at')[:7]
+    posts = Post.objects.filter(hidden=False).order_by('-raiting', '-created_at')[:7]
 
     body = {'articles':[], 'posts':[]}
 
     for element in articles:
+        print(element.updated_at)
         body['articles'].append({"title":element.title,
                      "slug":element.slug,
                      "author":element.author,
@@ -98,7 +99,6 @@ def getArticle(request):
         try:
             id = getIDByToken(request.GET['token'])
             if article.hidden and User.objects.get(id=uuid.UUID(id)).access <= 0:
-                print(User.objects.get(id=uuid.UUID(id)).access)
                 raise Article.DoesNotExist
 
         except KeyError:
@@ -128,9 +128,13 @@ def getArticle(request):
                     avatar = b"data:image/" + imageFormat.encode('utf-8') + b";base64," + base64.b64encode(avatar)
                     avatars[username] = avatar.decode("utf-8")
 
+            unaware_time = datetime.datetime.strptime(comment["timestamp"], "%Y-%m-%d %H:%M:%S.%f")
+            aware_time = pytz.utc.localize(unaware_time)
+
             comments.append({
                 "author":user.username,
-                "content":comment['content']
+                "content":comment['content'],
+                "timestamp":timezone.localtime(aware_time).strftime("%d-%m-%Y %H:%M")
             })
 
     except Article.DoesNotExist:
@@ -160,9 +164,7 @@ def autharization(request):
     try:
         login = request.GET['login']
         password = request.GET['password']
-        start = time.time()
         user = User.objects.get(username=login)
-        print(time.time() - start)
         id = str(user.id)
     except KeyError:
         response = {"status":"FAILED", "msg":"Плохой запрос!"}
@@ -375,16 +377,15 @@ def sendComment(request):
                     article = Article.objects.get(slug=request.GET['slug'])
                     article.comments['comments'] = [{
                         "author_id": profile_id,
-                        "content": request.GET['comment']
+                        "content": request.GET['comment'],
+                        "timestamp":str(datetime.datetime.utcnow())
                     }] + article.comments['comments']
 
                     article.save()
 
-                    start = time.time()
                     profile = User.objects.get(id=uuid.UUID(profile_id))
                     profile.experience += 2
                     profile.save()
-                    print("Completed in: ", time.time() - start)
 
                     response = {"status":"OK"}
 
@@ -484,13 +485,26 @@ def updatePassword(request):
     return response
 
 def search(request):
-    topics = []
-    topics += Article.objects.filter( Q(title__icontains=request.GET['query']) )
-    topics += Post.objects.filter( Q(title__icontains=request.GET['query']) )
+    queries = request.GET['query'].split(" ") + [query.capitalize() for query in request.GET['query']]
+    queryset = []
+
+    for query in queries:
+        articles = Article.objects.filter( Q(title__icontains=query) ).order_by('-raiting', '-created_at').distinct()
+        posts = Post.objects.filter( Q(title__icontains=query) ).order_by('-raiting', '-created_at').distinct()
+
+        for article in articles:
+            queryset.append(article)
+
+        for post in posts:
+            queryset.append(post)
+
+    for i in queryset:
+        while queryset.count(i) > 1:
+            queryset.remove(i)
 
     body = []
 
-    for element in topics:
+    for element in queryset:
         body.append({"title":element.title,
                      "slug":element.slug,
                      "author":element.author,
@@ -550,6 +564,15 @@ def isAVaildToken(request):
         response = {"status":"FAILED"}
     else:
         response = {"status":"OK"}
+
+    response = JsonResponse(response)
+    response["Access-Control-Allow-Origin"] = "*"
+    return response
+
+def getCurrentTime(request):
+    aware_time = pytz.utc.localize(datetime.datetime.utcnow())
+
+    response = {"status":"OK", "timestamp":timezone.localtime(aware_time).strftime("%d-%m-%Y %H:%M")}
 
     response = JsonResponse(response)
     response["Access-Control-Allow-Origin"] = "*"
