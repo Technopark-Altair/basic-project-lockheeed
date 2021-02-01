@@ -5,6 +5,7 @@ from .core import *
 
 class User(models.Model):
     name = models.CharField(max_length=24, null=False, verbose_name="Имя")
+    access = models.IntegerField(default=0)
     username = models.CharField(max_length=24, null=False, unique=True, verbose_name="Логин", primary_key=True)
     email = models.EmailField(max_length=256, unique=True, null=False, default="", verbose_name="Почта")
     avatar = models.ImageField(upload_to="avatars/")

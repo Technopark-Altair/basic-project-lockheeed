@@ -33,6 +33,9 @@
 
           <div class="row">
             <p class="subtitle mr">Статус аккаунта: </p>
+            <p *ngIf="data['access'] == 0" class="subtitle status" style="background: gray;">Пользователь</p>
+            <p *ngIf="data['access'] == 1" class="subtitle status" style="background: green">Модератор</p>
+            <p *ngIf="data['access'] == 2" class="subtitle status" style="background: #7071ba">Админ</p>
             <p *ngIf="!data['banned']" class="subtitle status" style="background: #52e32e;">Активен</p>
             <p *ngIf="data['banned']" class="subtitle status" style="background: #e65e19;">Забанен</p>
           </div>
@@ -54,8 +57,8 @@
       </div>
 
     <div class="row vm">
-      <button mat-raised-button (click)="exit()" class="exit mr" >Выход</button>
-      <button mat-raised-button (click)="updatePassword()" class="save" [disabled]="!current_password || !new_password">Сменить пароль</button>
+      <button mat-raised-button (click)="exit()" class="red__button mr" >Выход</button>
+      <button mat-raised-button (click)="updatePassword()" class="white__button" [disabled]="!current_password || !new_password">Сменить пароль</button>
     </div>
 
     </div>
@@ -66,7 +69,11 @@
         <img class="profile__picture" src="{{base64Image}}" alt="">
         <input class="input__file" type="file" #Image accept="Image/*" (change)="handleInputFile($event.target.files)">
       </div>
-      <button mat-raised-button (click)="updateAvatar()" class="save" [disabled]="!changed">Сохранить</button>
+      <div class="line">
+        <button mat-raised-button (click)="updateAvatar()" class="white__button" [disabled]="!changed">Сохранить</button>
+        <button mat-raised-button (click)="deleteAvatar()" class="red__button svm" [disabled]="currentAvatar=='assets/person.svg'">Удалить</button>
+      </div>
+
     </div>
   </div>
 

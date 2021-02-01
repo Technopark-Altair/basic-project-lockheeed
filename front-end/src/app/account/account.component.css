@@ -127,12 +127,12 @@ button {
   width: 50%;
 }
 
-.exit {
+.red__button {
   background-color: red;
   color: white;
 }
 
-.save {
+.white__button {
   background-color: white;
   color: black;
 }

@@ -27,23 +27,24 @@ export class ArticleComponent implements OnInit {
 
   constructor(private activateRoute: ActivatedRoute, private router: Router, private sanitizer: DomSanitizer, private requests: RequestsService, private snackBar: MatSnackBar){
         activateRoute.params.subscribe(params=>this.slug=params['slug']);
-        this.article = requests.getArticle(this.session_token, this.slug)["article"];
+        let res = requests.getArticle(this.session_token, this.slug);
+
+        if ( res['status'] == 'OK' ) {
+          this.article = res['article'];
+        } else {
+          router.navigate(['/not_found']);
+        }
+
         this.article_content = sanitizer.bypassSecurityTrustHtml(this.article['content']);
 
         let strCommentsCount = this.article['commentsCount'].toString();
-        console.log(strCommentsCount);
         let lastNum = parseInt(strCommentsCount.charAt(strCommentsCount.length - 1));
-        console.log(lastNum);
         if ( lastNum == 1 ) {
           this.correctWordForm = "Комментарий";
         } else if ( 1 < lastNum && lastNum < 5)  {
           this.correctWordForm = "Комментария";
         } else {
           this.correctWordForm = "Комментариев";
-        }
-
-        if ( !Object.keys(this.article).length ) {
-          router.navigate(['/not_found']);
         }
     }
 
@@ -92,7 +93,7 @@ export class ArticleComponent implements OnInit {
           if ( result['image'] ) {
             this.user_picture = result['image'];
           } else {
-            this.user_picture = 'assets/hacker.svg';
+            this.user_picture = 'assets/person.svg';
           }
           this.online = true;
         }
@@ -103,11 +104,12 @@ export class ArticleComponent implements OnInit {
     let res = this.requests.sendComment(this.session_token, 'article', this.slug, this.userComment);
 
     if ( res['status'] == 'OK' ) {
-      this.article["comments"].unshift({
+      this.article["comments"]["data"].unshift({
         "author":this.username,
-        "avatar":this.user_picture,
         "content":this.userComment
       })
+
+      this.article["comments"]["avatars"][this.username] = this.user_picture;
       this.article["commentsCount"] += 1;
       this.userComment = "";
       this.spawnSnackBar('Комментарий успешно отправлен!', 'valid');

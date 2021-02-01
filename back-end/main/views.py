@@ -87,41 +87,51 @@ def getArticle(request):
     try:
         slug = request.GET['slug']
         article = Article.objects.get(slug=slug)
-        article.views += 1
 
         try:
-            if request.GET['token']:
-                id = getIDByToken(request.GET['token'])
-                rated = article.rated[id]
-            else:
-                rated = None
+            id = getIDByToken(request.GET['token'])
+            rated = article.rated[id]
+
         except KeyError:
             rated = None
 
+        try:
+            id = getIDByToken(request.GET['token'])
+            if article.hidden and User.objects.get(id=uuid.UUID(id)).access <= 0:
+                print(User.objects.get(id=uuid.UUID(id)).access)
+                raise Article.DoesNotExist
+
+        except KeyError:
+            if article.hidden:
+                raise Article.DoesNotExist
+
+        article.views += 1
         article.save()
 
         comments = []
-        print(article.comments)
+        avatars = {}
+
         for comment in article.comments['comments']:
             user = User.objects.get(id=uuid.UUID(comment['author_id']))
+            username = user.username
             imageName = user.avatar.name
             imageFormat = imageName.split('.')[1]
 
-            try:
-                avatar = open(settings.MEDIA_ROOT + f"\\avatars\\{imageName}", "rb").read()
+            if username not in avatars:
+                try:
+                    avatar = open(settings.MEDIA_ROOT + f"\\avatars\\{imageName}", "rb").read()
 
-            except FileNotFoundError:
-                avatar = ""
+                except FileNotFoundError:
+                    avatar = ""
 
-            else:
-                avatar = b"data:image/" + imageFormat.encode('utf-8') + b";base64," + base64.b64encode(avatar)
+                else:
+                    avatar = b"data:image/" + imageFormat.encode('utf-8') + b";base64," + base64.b64encode(avatar)
+                    avatars[username] = avatar.decode("utf-8")
 
             comments.append({
                 "author":user.username,
-                "avatar":avatar.decode("utf-8"),
                 "content":comment['content']
             })
-
 
     except Article.DoesNotExist:
         response = {"status":"FAILED", "msg":"Статья не найдена!"}
@@ -135,7 +145,8 @@ def getArticle(request):
                 "raiting":article.raiting,
                 "rated":rated,
                 "views":article.views,
-                "comments":comments,
+                "hidden":article.hidden,
+                "comments":{"data":comments,"avatars":avatars},
                 "commentsCount":len(article.comments['comments']),
                 "type":article.type}
 
@@ -163,7 +174,7 @@ def autharization(request):
         if user.hash_pasword == password:
             if getTokensCountByID(id) >= 2:
                 removeTokenByID(id)
-                
+
             token = createSessionToken()
             addSessionToken(token, id)
             response = {"status":"OK", "session_token":token}
@@ -270,6 +281,7 @@ def getProfileInfo(request):
             "email":profile.email,
             "registered_at":timezone.localtime(profile.registered_at).strftime("%d-%m-%Y %H:%M"),
             "exp":profile.experience,
+            "access":profile.access,
             "banned":profile.banned,
             "avatar":image
         }}
@@ -314,6 +326,11 @@ def rate(request):
 
                         article.rated[profile_id] = request.GET['mark']
                         article.save()
+
+                        profile = User.objects.get(id=uuid.UUID(profile_id))
+                        profile.experience += 1
+                        profile.save()
+
                         response = {"status":"OK"}
 
                     elif article.rated[profile_id] != request.GET['mark']:
@@ -324,6 +341,11 @@ def rate(request):
 
                         article.rated[profile_id] = request.GET['mark']
                         article.save()
+
+                        profile = User.objects.get(id=uuid.UUID(profile_id))
+                        profile.experience += 1
+                        profile.save()
+
                         response = {"status":"OK"}
 
                     elif article.rated[profile_id] == request.GET['mark']:
@@ -345,7 +367,8 @@ def rate(request):
 
 def sendComment(request):
     try:
-        profile_id = str(getIDByToken(request.GET['token']))
+        profile_id = getIDByToken(request.GET['token'])
+
         if request.GET['comment'] and request.GET['comment'] != 'undefined':
             if request.GET['type'] == 'article':
                 try:
@@ -356,6 +379,13 @@ def sendComment(request):
                     }] + article.comments['comments']
 
                     article.save()
+
+                    start = time.time()
+                    profile = User.objects.get(id=uuid.UUID(profile_id))
+                    profile.experience += 2
+                    profile.save()
+                    print("Completed in: ", time.time() - start)
+
                     response = {"status":"OK"}
 
                 except Article.DoesNotExist:
@@ -406,6 +436,30 @@ def updateAvatar(request):
     response["Access-Control-Allow-Origin"] = "*"
     return response
 
+def deleteAvatar(request):
+    try:
+        id = getIDByToken(request.GET['token'])
+        profile = User.objects.get(id=uuid.UUID(id))
+        imageName = profile.avatar.name
+
+        try:
+            os.remove(settings.MEDIA_ROOT + "\\avatars\\" + imageName)
+        except FileNotFoundError:
+            pass
+
+        response = {"status":"OK"}
+
+    except KeyError:
+        response = {"status":"FAILED", "msg":"Необходимо авторизироваться!"}
+
+    except User.DoesNotExist:
+        response = {"status":"FAILED", "msg":"Упс... Что-то пошло не так."}
+
+    response = JsonResponse(response)
+    response["Access-Control-Allow-Origin"] = "*"
+    return response
+
+
 def updatePassword(request):
     try:
         id = getIDByToken(request.GET['token'])
@@ -454,7 +508,8 @@ def search(request):
 def publicateArticle(request):
     try:
         id = getIDByToken(request.GET['token'])
-        username = User.objects.get(id=uuid.UUID(id)).username
+        profile = User.objects.get(id=uuid.UUID(id))
+        username = profile.username
         title = request.GET['title']
         content = request.body.decode("utf-8")
 
@@ -465,8 +520,12 @@ def publicateArticle(request):
                             title=title,
                             author=username,
                             content=content,
-                            comments={"comments":[]}
+                            comments={"comments":[]},
+                            hidden=True
                             )
+
+                profile.experience += 15
+                profile.save()
 
                 response = {"status":"OK"}
 
@@ -478,6 +537,19 @@ def publicateArticle(request):
 
     except KeyError:
         response = {"status":"FAILED", "msg":"Необходимо авторизироваться!"}
+
+    response = JsonResponse(response)
+    response["Access-Control-Allow-Origin"] = "*"
+    return response
+
+def isAVaildToken(request):
+    try:
+        print(request.GET['token'])
+        id = getIDByToken(request.GET['token'])
+    except KeyError:
+        response = {"status":"FAILED"}
+    else:
+        response = {"status":"OK"}
 
     response = JsonResponse(response)
     response["Access-Control-Allow-Origin"] = "*"

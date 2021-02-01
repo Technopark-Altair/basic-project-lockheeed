@@ -58,6 +58,11 @@ export class RequestsService {
     return JSON.parse( this.makeRequest('POST', 'auth/', params) );
   }
 
+  isAVaildToken(session_token): JSON {
+    let params = "token=" + session_token;
+    return JSON.parse( this.makeRequest('POST', 'is_a_valid_token/', params) );
+  }
+
   getProfileInfo(session_token): JSON {
     let params = 'token=' + session_token;
     return JSON.parse( this.makeRequest('GET', 'get_profile/', params) );
@@ -86,6 +91,11 @@ export class RequestsService {
   updateAvatar(session_token, base64Image): JSON {
     let params = 'token=' + session_token;
     return JSON.parse( this.makeRequest('POST', 'update_avatar/', params, base64Image) );
+  }
+
+  deleteAvatar(session_token): JSON {
+    let params = 'token=' + session_token;
+    return JSON.parse( this.makeRequest('POST', 'delete_avatar/', params) );
   }
 
   updatePassword(session_token, current_password, new_password): JSON {

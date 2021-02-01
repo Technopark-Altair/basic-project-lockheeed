@@ -17,7 +17,9 @@ urlpatterns = [
     path('rate/', csrf_exempt(rate)),
     path('search/', search),
     path('update_avatar/', csrf_exempt(updateAvatar)),
+    path('delete_avatar/', csrf_exempt(deleteAvatar)),
     path('update_password/', csrf_exempt(updatePassword)),
     path('publicate_article/', csrf_exempt(publicateArticle)),
-    path('send_comment/', csrf_exempt(sendComment))
+    path('send_comment/', csrf_exempt(sendComment)),
+    path('is_a_valid_token/', csrf_exempt(isAVaildToken))
 ]

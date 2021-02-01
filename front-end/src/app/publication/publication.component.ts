@@ -85,7 +85,7 @@ export class PublicationComponent implements OnInit {
       if ( res['status'] == 'OK' ) {
         this.articleTitle = "";
         this.articleContent = "";
-        this.spawnSnackBar('Статья успешно опубликованна!', 'valid');
+        this.spawnSnackBar('Статья успешно отправлена на модерацию!', 'valid');
       } else {
         this.spawnSnackBar(res['msg'], 'error');
       }

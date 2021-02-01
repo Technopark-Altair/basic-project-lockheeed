@@ -26,8 +26,11 @@ const routes: Routes = [
   {path: 'not_found', component: NotfoundComponent}
 ];
 
+
 @NgModule({
-  imports: [RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy' })],
+  imports: [RouterModule.forRoot(routes, { relativeLinkResolution: 'legacy',
+                                           scrollPositionRestoration: 'top' })
+           ],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

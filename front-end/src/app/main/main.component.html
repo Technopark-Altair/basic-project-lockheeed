@@ -3,10 +3,7 @@
 
   <div class="info__container">
     <p class="text">Есть интересный материал для статьи или обсужднения?</p>
-    <a routerLink="/publication">
-      <button mat-raised-button class="submit__button">Создайте статью или пост</button>
-    </a>
-
+    <button (click)="openPublicationPage()" mat-raised-button class="submit__button">Создайте статью или пост</button>
   </div>
 
   <div class="topics">

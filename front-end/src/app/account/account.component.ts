@@ -19,8 +19,10 @@ export class AccountComponent implements OnInit {
   current_password: string = "";
   new_password: string = "";
 
-  base64Image: string;
+  base64Image: string = "assets/person.svg";
+  currentAvatar: string = "assets/person.svg";
   changed: boolean = false;
+  canBeDeleted: boolean = false;
 
   spawnSnackBar(error_text, panel_class) {
     this.snackBar.open(error_text, "", {
@@ -37,8 +39,12 @@ export class AccountComponent implements OnInit {
      reader.readAsDataURL(fileToUpload);
 
      reader.onload = (event:any) => {
+       if ( this.base64Image != reader.result as string && this.currentAvatar != reader.result as string) {
+         this.changed = true;
+       } else {
+         this.changed = false;
+       }
        this.base64Image = reader.result as string;
-       this.changed = true;
      }
    }
 
@@ -48,7 +54,10 @@ export class AccountComponent implements OnInit {
 
         if ( res['status'] == 'OK' ) {
           this.data = res['data'];
-          this.base64Image = this.data['avatar'];
+          if ( this.data['avatar'] ) {
+              this.base64Image = this.data['avatar'];
+              this.currentAvatar = this.data['avatar'];
+          }
           return;
         }
       }
@@ -81,7 +90,22 @@ export class AccountComponent implements OnInit {
   }
 
   updateAvatar() {
-    let res = this.requests.updateAvatar(this.session_token, this.base64Image);
+    try {
+      let res = this.requests.updateAvatar(this.session_token, this.base64Image);
+
+      if ( res['status'] == 'OK' ) {
+        window.open(window.location.href, "_self");
+      } else {
+        this.spawnSnackBar(res['msg'], 'error');
+      }
+    }
+    catch(e) {
+      this.spawnSnackBar("Загружаемый файл слшиком большой!", 'error');
+    }
+  }
+
+  deleteAvatar() {
+    let res = this.requests.deleteAvatar(this.session_token);
 
     if ( res['status'] == 'OK' ) {
       window.open(window.location.href, "_self");
