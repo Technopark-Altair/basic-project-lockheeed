@@ -428,7 +428,7 @@ def updateAvatar(request):
 
         try:
             os.remove(os.path.join(settings.MEDIA_ROOT, "avatars", imageName))
-        except FileNotFoundError:
+        except Exception:
             pass
 
         request_body = request.body
