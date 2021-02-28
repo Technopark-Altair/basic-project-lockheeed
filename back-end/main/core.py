@@ -3,10 +3,12 @@ from transliterate import translit
 
 from django.conf import settings
 
-TOKENS_FILE = 'C:\\Users\\mrart\\Desktop\\cybersafe\\back-end\\session_tokens.json'
+TOKENS_FILE = os.path.join(settings.BASE_DIR, "session_tokens.json")
+
 
 def createSessionToken():
     return "".join([str(hex(random.randint(0, 16))[2:]) for i in range(64)])
+
 
 def readSessionTokens():
     if os.path.isfile(TOKENS_FILE):
@@ -15,13 +17,16 @@ def readSessionTokens():
         json.dump({}, open(TOKENS_FILE, "w"))
         return {}
 
+
 def addSessionToken(session_token, uid):
     session_tokens = readSessionTokens()
     session_tokens[session_token] = uid
     json.dump(session_tokens, open(TOKENS_FILE, "w"))
 
+
 def getIDByToken(uid):
     return readSessionTokens()[uid]
+
 
 def removeToken(token):
     session_tokens = readSessionTokens()
@@ -34,6 +39,7 @@ def removeToken(token):
     else:
         return True
 
+
 def removeTokenByID(uid):
     session_tokens = readSessionTokens()
     for t, l in session_tokens.copy().items():
@@ -41,6 +47,7 @@ def removeTokenByID(uid):
             del session_tokens[t]
 
     json.dump(session_tokens, open(TOKENS_FILE, "w"))
+
 
 def getTokensCountByID(uid):
     count = 0
@@ -50,11 +57,13 @@ def getTokensCountByID(uid):
             count += 1
     return count
 
+
 def parseImage(image_body):
     format = image_body.split(b'data:image/')[1].split(b';')[0].decode('utf-8')
     print(format)
     body = image_body.split(b';base64,')[1]
     return format, body
+
 
 def createSlug(title):
     return translit(title.replace(" ", "_"), "ru", reversed=True)
