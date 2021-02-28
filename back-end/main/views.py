@@ -9,7 +9,7 @@ from .models import Article
 from .models import Post
 from .models import User
 
-import django.db.utils.IntegrityError
+import django.db.utils
 import base64
 import os
 import uuid
