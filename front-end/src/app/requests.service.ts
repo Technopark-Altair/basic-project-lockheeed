@@ -9,7 +9,7 @@ export class RequestsService {
   constructor() { }
 
   // api_url: string = "https://api.cybersafe.ml/api/";
-  api_url: string = "http://127.0.0.1:8000/api/";
+  api_url: string = "https://api.cybersafe.ml/api/";
 
   makeRequest(method, slug, params = undefined, payload = undefined): string {
     var xhr = new XMLHttpRequest();
