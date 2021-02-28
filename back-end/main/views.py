@@ -1,5 +1,4 @@
 from django.db.models import Q
-from django.shortcuts import render
 from django.http import JsonResponse
 from django.utils import timezone
 from django.conf import settings
@@ -10,79 +9,90 @@ from .models import Article
 from .models import Post
 from .models import User
 
-import base64, operator, os, uuid, time, datetime, pytz
+import django.db.utils.IntegrityError
+import base64
+import os
+import uuid
+import time
+import datetime
+import pytz
 
 # Create your views here.
 
+
 def index(request):
-    response = {"status":"OK"}
+    print(settings.MEDIA_ROOT)
+    response = {"status": "OK"}
     return JsonResponse(response)
+
 
 def getTop(request):
     articles = Article.objects.filter(hidden=False).order_by('-raiting', '-created_at')[:7]
     posts = Post.objects.filter(hidden=False).order_by('-raiting', '-created_at')[:7]
 
-    body = {'articles':[], 'posts':[]}
+    body = {'articles': [], 'posts': []}
 
     for element in articles:
-        print(element.updated_at)
-        body['articles'].append({"title":element.title,
-                     "slug":element.slug,
-                     "author":element.author,
-                     "updated_at":timezone.localtime(element.updated_at).strftime("%d-%m-%Y %H:%M"),
-                     "raiting":element.raiting,
-                     "views":element.views,
-                     "type":element.type})
+        body['articles'].append({"title": element.title,
+                     "slug": element.slug,
+                     "author": element.author,
+                     "updated_at": timezone.localtime(element.updated_at).strftime("%d-%m-%Y %H:%M"),
+                     "raiting": element.raiting,
+                     "views": element.views,
+                     "type": element.type})
 
     for element in posts:
-        body['posts'].append({"title":element.title,
-                     "slug":element.slug,
-                     "author":element.author,
-                     "updated_at":timezone.localtime(element.updated_at).strftime("%d-%m-%Y %H:%M"),
-                     "raiting":element.raiting,
-                     "views":element.views,
-                     "type":element.type})
+        body['posts'].append({"title": element.title,
+                     "slug": element.slug,
+                     "author": element.author,
+                     "updated_at": timezone.localtime(element.updated_at).strftime("%d-%m-%Y %H:%M"),
+                     "raiting": element.raiting,
+                     "views": element.views,
+                     "type": element.type})
 
-    response = {"status":"OK", "top":body}
+    response = {"status": "OK", "top": body}
     response = JsonResponse(response)
     response["Access-Control-Allow-Origin"] = "*"
     return response
 
+
 def getLastArticles(request):
-    articles = Article.objects.all()
+    articles = Article.objects.filter(hidden=False)
     body = []
 
     for article in articles:
-        body.append({"title":article.title,
-                     "slug":article.slug,
-                     "author":article.author,
-                     "updated_at":timezone.localtime(article.updated_at).strftime("%d-%m-%Y %H:%M"),
-                     "raiting":article.raiting,
-                     "views":article.views,
-                     "type":article.type})
+        body.append({"title": article.title,
+                     "slug": article.slug,
+                     "author": article.author,
+                     "updated_at": timezone.localtime(article.updated_at).strftime("%d-%m-%Y %H:%M"),
+                     "raiting": article.raiting,
+                     "views": article.views,
+                     "type": article.type})
 
-    response = {"status":"OK", "articles":body}
+    response = {"status": "OK", "articles": body}
     response = JsonResponse(response)
     response["Access-Control-Allow-Origin"] = "*"
     return response
 
+
 def getLastPosts(request):
-    posts = Post.objects.all()
+    posts = Post.objects.filter(hidden=False)
     body = []
 
     for post in posts:
-        body.append({"title":post.title,
-                     "slug":post.slug,
-                     "author":post.author,
-                     "updated_at":timezone.localtime(post.updated_at).strftime("%d-%m-%Y %H:%M"),
-                     "raiting":post.raiting,
-                     "views":post.views,
-                     "type":post.type})
+        body.append({"title": post.title,
+                     "slug": post.slug,
+                     "author": post.author,
+                     "updated_at": timezone.localtime(post.updated_at).strftime("%d-%m-%Y %H:%M"),
+                     "raiting": post.raiting,
+                     "views": post.views,
+                     "type": post.type})
 
-    response = {"status":"OK", "posts":body}
+    response = {"status": "OK", "posts": body}
     response = JsonResponse(response)
     response["Access-Control-Allow-Origin"] = "*"
     return response
+
 
 def getArticle(request):
     try:
@@ -115,50 +125,49 @@ def getArticle(request):
             user = User.objects.get(id=uuid.UUID(comment['author_id']))
             username = user.username
             imageName = user.avatar.name
-            imageFormat = imageName.split('.')[1]
 
             if username not in avatars:
-                try:
-                    avatar = open(settings.MEDIA_ROOT + f"\\avatars\\{imageName}", "rb").read()
+                fullImagePath = os.path.join(settings.MEDIA_ROOT, "avatars", imageName)
 
-                except FileNotFoundError:
-                    avatar = ""
-
+                if os.path.isfile(fullImagePath):
+                    avatar = settings.AVATARS_URL + imageName
                 else:
-                    avatar = b"data:image/" + imageFormat.encode('utf-8') + b";base64," + base64.b64encode(avatar)
-                    avatars[username] = avatar.decode("utf-8")
+                    user.avatar = None
+                    user.save()
+                    avatar = None
 
             unaware_time = datetime.datetime.strptime(comment["timestamp"], "%Y-%m-%d %H:%M:%S.%f")
             aware_time = pytz.utc.localize(unaware_time)
 
             comments.append({
-                "author":user.username,
-                "content":comment['content'],
-                "timestamp":timezone.localtime(aware_time).strftime("%d-%m-%Y %H:%M")
+                "author": user.username,
+                "content": comment['content'],
+                "timestamp": timezone.localtime(aware_time).strftime("%d-%m-%Y %H:%M")
             })
 
     except Article.DoesNotExist:
-        response = {"status":"FAILED", "msg":"Статья не найдена!"}
+        response = {"status": "FAILED", "msg": "Статья не найдена!"}
 
     else:
-        body = {"title":article.title,
-                "slug":article.slug,
-                "author":article.author,
-                "updated_at":timezone.localtime(article.updated_at).strftime("%d-%m-%Y %H:%M"),
-                "content":article.content,
-                "raiting":article.raiting,
-                "rated":rated,
-                "views":article.views,
-                "hidden":article.hidden,
-                "comments":{"data":comments,"avatars":avatars},
-                "commentsCount":len(article.comments['comments']),
-                "type":article.type}
+        body = {"title": article.title,
+                "slug": article.slug,
+                "author": article.author,
+                "updated_at": timezone.localtime(article.updated_at).strftime("%d-%m-%Y %H:%M"),
+                "content": article.content,
+                "raiting": article.raiting,
+                "rated": rated,
+                "views": article.views,
+                "hidden": article.hidden,
+                "comments": {"data": comments, "avatars": avatars},
+                "commentsCount": len(article.comments['comments']),
+                "type": article.type}
 
-        response = {"status":"OK", "article":body}
+        response = {"status": "OK", "article": body}
 
     response = JsonResponse(response)
     response["Access-Control-Allow-Origin"] = "*"
     return response
+
 
 def autharization(request):
     try:
@@ -167,10 +176,10 @@ def autharization(request):
         user = User.objects.get(username=login)
         id = str(user.id)
     except KeyError:
-        response = {"status":"FAILED", "msg":"Плохой запрос!"}
+        response = {"status": "FAILED", "msg": "Плохой запрос!"}
 
     except User.DoesNotExist:
-        response = {"status":"FAILED", "msg":"Неверный логин или пароль!"}
+        response = {"status": "FAILED", "msg": "Неверный логин или пароль!"}
 
     else:
         if user.hash_pasword == password:
@@ -179,13 +188,14 @@ def autharization(request):
 
             token = createSessionToken()
             addSessionToken(token, id)
-            response = {"status":"OK", "session_token":token}
+            response = {"status": "OK", "session_token": token}
         else:
-            response = {"status":"FAILED", "msg":"Неверный логин или пароль!"}
+            response = {"status": "FAILED", "msg": "Неверный логин или пароль!"}
 
     response = JsonResponse(response)
     response["Access-Control-Allow-Origin"] = "*"
     return response
+
 
 def registration(request):
     try:
@@ -198,7 +208,7 @@ def registration(request):
         User.objects.get(username=login)
 
     except KeyError:
-        response = {"status":"FAILED", "msg":"Плохой запрос!"}
+        response = {"status": "FAILED", "msg": "Плохой запрос!"}
 
     except User.DoesNotExist:
         try:
@@ -206,10 +216,10 @@ def registration(request):
 
         except User.DoesNotExist:
             profile = User.objects.create(
-                name = name,
-                username = login,
-                email = email,
-                hash_pasword = hash_pasword,
+                name=name,
+                username=login,
+                email=email,
+                hash_pasword=hash_pasword,
             )
             id = str(profile.id)
 
@@ -217,7 +227,7 @@ def registration(request):
             if request_body:
                 id = str(profile.id)
                 imgFormat, image = parseImage(request.body)
-                open(settings.MEDIA_ROOT + f"\\avatars\\{id}.{imgFormat}", "wb").write(base64.b64decode(image))
+                open(os.path.join(settings.MEDIA_ROOT, "avatars", f"{id}.{imgFormat}"), "wb").write(base64.b64decode(image))
                 avatar = id + '.' + imgFormat
 
             else:
@@ -228,94 +238,101 @@ def registration(request):
 
             token = createSessionToken()
             addSessionToken(token, id)
-            response = {"status":"OK", "session_token":token}
+            response = {"status": "OK", "session_token": token}
 
         else:
-            response = {"status":"FAILED", "msg":"Эта почта уже зарегистрирована!"}
+            response = {"status": "FAILED", "msg": "Эта почта уже зарегистрирована!"}
 
     else:
-        response = {"status":"FAILED", "msg":"Этот логин уже занят!"}
+        response = {"status": "FAILED", "msg": "Этот логин уже занят!"}
 
     response = JsonResponse(response)
     response["Access-Control-Allow-Origin"] = "*"
     return response
+
 
 def getProfileAvatar(request):
     try:
         id = getIDByToken(request.GET['token'])
         imageName = User.objects.get(id=uuid.UUID(id)).avatar.name
-        imageFormat = imageName.split('.')[1]
 
-        try:
-            image = open(settings.MEDIA_ROOT + f"\\avatars\\{imageName}", "rb").read()
+        if imageName:
+            fullImagePath = os.path.join(settings.MEDIA_ROOT, "avatars", imageName)
 
-        except FileNotFoundError:
-            response = {"status":"OK", "image":''}
+            if os.path.isfile(fullImagePath):
+                response = {"status": "OK", "image": settings.AVATARS_URL + imageName}
+            else:
+                user = User.objects.get(id=uuid.UUID(id))
+                user.avatar = None
+                user.save()
+                response = {"status": "OK", "image": None}
 
         else:
-            image = b"data:image/" + imageFormat.encode('utf-8') + b";base64," + base64.b64encode(image)
-            response = {"status":"OK", "image":image.decode("utf-8")}
+            response = {"status": "OK", "image": None}
 
     except KeyError:
-        response = {"status":"FAILED", "msg":"Необходимо авторизироваться!"}
+        response = {"status": "FAILED", "msg": "Необходимо авторизироваться!"}
 
     response = JsonResponse(response)
     response["Access-Control-Allow-Origin"] = "*"
     return response
+
 
 def getProfileInfo(request):
     try:
         id = getIDByToken(request.GET['token'])
         profile = User.objects.get(id=uuid.UUID(id))
         imageName = profile.avatar.name
-        imageFormat = imageName.split('.')[1]
 
-        try:
-            image = open(settings.MEDIA_ROOT + f"\\avatars\\{imageName}", "rb").read()
-        except FileNotFoundError:
-            image = ''
+        fullImagePath = os.path.join(settings.MEDIA_ROOT, "avatars", imageName)
+
+        if os.path.isfile(fullImagePath):
+            image = settings.AVATARS_URL + imageName
         else:
-            image = (b'data:image/' + imageFormat.encode('utf-8') + b';base64,' + base64.b64encode(image)).decode("utf-8")
+            profile.avatar = None
+            profile.save()
+            image = None
 
-        response = {"status":"OK", "data":{
-            "username":profile.username,
-            "name":profile.name,
-            "email":profile.email,
-            "registered_at":timezone.localtime(profile.registered_at).strftime("%d-%m-%Y %H:%M"),
-            "exp":profile.experience,
-            "access":profile.access,
-            "banned":profile.banned,
-            "avatar":image
+        response = {"status": "OK", "data": {
+            "username": profile.username,
+            "name": profile.name,
+            "email": profile.email,
+            "registered_at": timezone.localtime(profile.registered_at).strftime("%d-%m-%Y %H:%M"),
+            "exp": profile.experience,
+            "access": profile.access,
+            "banned": profile.banned,
+            "avatar": image
         }}
 
     except KeyError:
-        response = {"status":"FAILED", "msg":"Необходимо авторизироваться!"}
+        response = {"status": "FAILED", "msg": "Необходимо авторизироваться!"}
 
     response = JsonResponse(response)
     response["Access-Control-Allow-Origin"] = "*"
     return response
+
 
 def exit(request):
     try:
         token = request.GET['token']
-        if removeToken( token ):
-            response = {"status":"OK"}
+        if removeToken(token):
+            response = {"status": "OK"}
         else:
-            response = {"status":"FAILED", "msg":"Упс... Что-то пошло не так."}
+            response = {"status": "FAILED", "msg": "Упс... Что-то пошло не так."}
 
     except KeyError:
-        response = {"status":"FAILED", "msg":"Необходимо авторизироваться!"}
+        response = {"status": "FAILED", "msg": "Необходимо авторизироваться!"}
 
     response = JsonResponse(response)
     response["Access-Control-Allow-Origin"] = "*"
     return response
+
 
 def rate(request):
     try:
         profile_id = getIDByToken(request.GET['token'])
 
         if request.GET['mark'] in ['up', 'down']:
-
             if request.GET['type'] == 'article':
                 try:
                     article = Article.objects.get(slug=request.GET['slug'])
@@ -333,7 +350,7 @@ def rate(request):
                         profile.experience += 1
                         profile.save()
 
-                        response = {"status":"OK"}
+                        response = {"status": "OK"}
 
                     elif article.rated[profile_id] != request.GET['mark']:
                         if request.GET['mark'] == 'up':
@@ -348,24 +365,25 @@ def rate(request):
                         profile.experience += 1
                         profile.save()
 
-                        response = {"status":"OK"}
+                        response = {"status": "OK"}
 
                     elif article.rated[profile_id] == request.GET['mark']:
-                        response = {"status":"FAILED", "msg":"Голос уже засчитан!"}
+                        response = {"status": "FAILED", "msg": "Голос уже засчитан!"}
 
 
                 except Article.DoesNotExist:
-                    response = {"status":"FAILED", "msg":"Такой статьи не существует!"}
+                    response = {"status": "FAILED", "msg": "Такой статьи не существует!"}
 
         else:
-            response = {"status":"FAILED", "msg":"Неверный запрос!"}
+            response = {"status": "FAILED", "msg": "Неверный запрос!"}
 
     except KeyError:
-        response = {"status":"FAILED", "msg":"Необходимо авторизироваться!"}
+        response = {"status": "FAILED", "msg": "Необходимо авторизироваться!"}
 
     response = JsonResponse(response)
     response["Access-Control-Allow-Origin"] = "*"
     return response
+
 
 def sendComment(request):
     try:
@@ -387,15 +405,15 @@ def sendComment(request):
                     profile.experience += 2
                     profile.save()
 
-                    response = {"status":"OK"}
+                    response = {"status": "OK"}
 
                 except Article.DoesNotExist:
-                    response = {"status":"FAILED", "msg":"Такой статьи не существует!"}
+                    response = {"status": "FAILED", "msg": "Такой статьи не существует!"}
         else:
-            response = {"status":"FAILED", "msg":"Комментарий не может быть пустым!"}
+            response = {"status": "FAILED", "msg": "Комментарий не может быть пустым!"}
 
     except KeyError:
-        response = {"status":"FAILED", "msg":"Необходимо авторизироваться!"}
+        response = {"status": "FAILED", "msg": "Необходимо авторизироваться!"}
 
     response = JsonResponse(response)
     response["Access-Control-Allow-Origin"] = "*"
@@ -409,7 +427,7 @@ def updateAvatar(request):
         imageName = profile.avatar.name
 
         try:
-            os.remove(settings.MEDIA_ROOT + "\\avatars\\" + imageName)
+            os.remove(os.path.join(settings.MEDIA_ROOT, "avatars", imageName))
         except FileNotFoundError:
             pass
 
@@ -417,7 +435,7 @@ def updateAvatar(request):
         if request_body:
             uid = str(profile.id)
             imgFormat, image = parseImage(request.body)
-            open(settings.MEDIA_ROOT + f"\\avatars\\{uid}.{imgFormat}", "wb").write(base64.b64decode(image))
+            open(os.path.join(settings.MEDIA_ROOT, "avatars", f"{uid}.{imgFormat}"), "wb").write(base64.b64decode(image))
             avatar = uid + '.' + imgFormat
         else:
             avatar = None
@@ -425,17 +443,18 @@ def updateAvatar(request):
         profile.avatar = avatar
         profile.save()
 
-        response = {"status":"OK"}
+        response = {"status": "OK"}
 
     except KeyError:
-        response = {"status":"FAILED", "msg":"Необходимо авторизироваться!"}
+        response = {"status": "FAILED", "msg": "Необходимо авторизироваться!"}
 
     except User.DoesNotExist:
-        response = {"status":"FAILED", "msg":"Упс... Что-то пошло не так."}
+        response = {"status": "FAILED", "msg": "Упс... Что-то пошло не так."}
 
     response = JsonResponse(response)
     response["Access-Control-Allow-Origin"] = "*"
     return response
+
 
 def deleteAvatar(request):
     try:
@@ -444,17 +463,17 @@ def deleteAvatar(request):
         imageName = profile.avatar.name
 
         try:
-            os.remove(settings.MEDIA_ROOT + "\\avatars\\" + imageName)
+            os.remove(os.path.join(settings.MEDIA_ROOT, "avatars", imageName))
         except FileNotFoundError:
             pass
 
-        response = {"status":"OK"}
+        response = {"status": "OK"}
 
     except KeyError:
-        response = {"status":"FAILED", "msg":"Необходимо авторизироваться!"}
+        response = {"status": "FAILED", "msg": "Необходимо авторизироваться!"}
 
     except User.DoesNotExist:
-        response = {"status":"FAILED", "msg":"Упс... Что-то пошло не так."}
+        response = {"status": "FAILED", "msg": "Упс... Что-то пошло не так."}
 
     response = JsonResponse(response)
     response["Access-Control-Allow-Origin"] = "*"
@@ -469,23 +488,24 @@ def updatePassword(request):
         if profile.hash_pasword == request.GET['current']:
             profile.hash_pasword = request.GET['new']
             profile.save()
-            response = {"status":"OK"}
+            response = {"status": "OK"}
 
         else:
-            response = {"status":"FAILED", "msg":"Неверный пароль!"}
+            response = {"status": "FAILED", "msg": "Неверный пароль!"}
 
     except KeyError:
-        response = {"status":"FAILED", "msg":"Необходимо авторизироваться!"}
+        response = {"status": "FAILED", "msg": "Необходимо авторизироваться!"}
 
     except User.DoesNotExist:
-        response = {"status":"FAILED", "msg":"Упс... Что-то пошло не так."}
+        response = {"status": "FAILED", "msg": "Упс... Что-то пошло не так."}
 
     response = JsonResponse(response)
     response["Access-Control-Allow-Origin"] = "*"
     return response
 
+
 def search(request):
-    queries = request.GET['query'].split(" ") + [query.capitalize() for query in request.GET['query']]
+    queries = request.GET['query'].split(" ") + [query.capitalize() for query in request.GET['query'].split(" ")]
     queryset = []
 
     for query in queries:
@@ -505,19 +525,20 @@ def search(request):
     body = []
 
     for element in queryset:
-        body.append({"title":element.title,
-                     "slug":element.slug,
-                     "author":element.author,
-                     "updated_at":timezone.localtime(element.updated_at).strftime("%d-%m-%Y %H:%M"),
-                     "raiting":element.raiting,
-                     "views":element.views,
-                     "type":element.type})
+        body.append({"title": element.title,
+                     "slug": element.slug,
+                     "author": element.author,
+                     "updated_at": timezone.localtime(element.updated_at).strftime("%d-%m-%Y %H:%M"),
+                     "raiting": element.raiting,
+                     "views": element.views,
+                     "type": element.type})
 
-    response = {"status":"OK", "topics":body}
+    response = {"status": "OK", "topics": body}
 
     response = JsonResponse(response)
     response["Access-Control-Allow-Origin"] = "*"
     return response
+
 
 def publicateArticle(request):
     try:
@@ -527,52 +548,53 @@ def publicateArticle(request):
         title = request.GET['title']
         content = request.body.decode("utf-8")
 
-        if title and content:
+        if title and title != "undefined" and content:
             try:
                 Article.objects.create(
                             slug=createSlug(title),
                             title=title,
                             author=username,
                             content=content,
-                            comments={"comments":[]},
+                            comments={"comments": []},
                             hidden=True
                             )
 
                 profile.experience += 15
                 profile.save()
 
-                response = {"status":"OK"}
+                response = {"status": "OK"}
 
             except django.db.utils.IntegrityError:
-                response = {"status":"FAILED", "msg":"Статья с таким заголовком уже существует!"}
+                response = {"status": "FAILED", "msg": "Статья с таким заголовком уже существует!"}
 
         else:
-            response = {"status":"FAILED", "msg":"Поля не могут быть пустыми!"}
+            response = {"status": "FAILED", "msg": "Поля не могут быть пустыми!"}
 
     except KeyError:
-        response = {"status":"FAILED", "msg":"Необходимо авторизироваться!"}
+        response = {"status": "FAILED", "msg": "Необходимо авторизироваться!"}
 
     response = JsonResponse(response)
     response["Access-Control-Allow-Origin"] = "*"
     return response
+
 
 def isAVaildToken(request):
     try:
-        print(request.GET['token'])
         id = getIDByToken(request.GET['token'])
     except KeyError:
-        response = {"status":"FAILED"}
+        response = {"status": "FAILED"}
     else:
-        response = {"status":"OK"}
+        response = {"status": "OK"}
 
     response = JsonResponse(response)
     response["Access-Control-Allow-Origin"] = "*"
     return response
+
 
 def getCurrentTime(request):
     aware_time = pytz.utc.localize(datetime.datetime.utcnow())
 
-    response = {"status":"OK", "timestamp":timezone.localtime(aware_time).strftime("%d-%m-%Y %H:%M")}
+    response = {"status": "OK", "timestamp": timezone.localtime(aware_time).strftime("%d-%m-%Y %H:%M")}
 
     response = JsonResponse(response)
     response["Access-Control-Allow-Origin"] = "*"

@@ -30,7 +30,6 @@ export class PublicationComponent implements OnInit {
       'insertdatetime media table paste code help wordcount imagetools image'
     ],
     toolbar: 'undo redo | formatselect | bold italic backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | removeformat | link image',
-
     image_title: true,
     automatic_uploads: true,
     file_picker_types: 'image',
@@ -76,6 +75,7 @@ export class PublicationComponent implements OnInit {
 
   onTinyMCEInit() {
     tinymce.activeEditor.getBody().style.backgroundColor = '#554853';
+    tinymce.activeEditor.setContent(this.articleContent, {format: 'raw'});
   }
 
   publicate() {
