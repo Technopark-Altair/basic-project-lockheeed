@@ -60,10 +60,10 @@ def getTokensCountByID(uid):
 
 def parseImage(image_body):
     format = image_body.split(b'data:image/')[1].split(b';')[0].decode('utf-8')
-    print(format)
     body = image_body.split(b';base64,')[1]
     return format, body
 
 
 def createSlug(title):
-    return translit(title.replace(" ", "_"), "ru", reversed=True)
+    char_map = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM_"
+    return "".join([symbol for symbol in translit(title.replace(" ", "_"), "ru", reversed=True) if symbol in char_map])

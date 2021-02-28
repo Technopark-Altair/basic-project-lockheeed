@@ -21,7 +21,6 @@ import pytz
 
 
 def index(request):
-    print(settings.MEDIA_ROOT)
     response = {"status": "OK"}
     return JsonResponse(response)
 
@@ -547,11 +546,12 @@ def publicateArticle(request):
         username = profile.username
         title = request.GET['title']
         content = request.body.decode("utf-8")
+        slug = createSlug(title)
 
-        if title and title != "undefined" and content:
+        if title and title != "undefined" and content and len(slug) > 0:
             try:
                 Article.objects.create(
-                            slug=createSlug(title),
+                            slug=slug,
                             title=title,
                             author=username,
                             content=content,
