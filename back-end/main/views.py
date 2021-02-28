@@ -129,11 +129,10 @@ def getArticle(request):
                 fullImagePath = os.path.join(settings.MEDIA_ROOT, "avatars", imageName)
 
                 if os.path.isfile(fullImagePath):
-                    avatar = settings.AVATARS_URL + imageName
+                    avatars[username] = settings.AVATARS_URL + imageName
                 else:
                     user.avatar = None
                     user.save()
-                    avatar = None
 
             unaware_time = datetime.datetime.strptime(comment["timestamp"], "%Y-%m-%d %H:%M:%S.%f")
             aware_time = pytz.utc.localize(unaware_time)

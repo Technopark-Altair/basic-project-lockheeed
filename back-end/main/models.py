@@ -3,6 +3,7 @@ import uuid
 
 from .core import *
 
+
 class User(models.Model):
     name = models.CharField(max_length=24, null=False, verbose_name="Имя")
     access = models.IntegerField(default=0)
@@ -23,6 +24,7 @@ class User(models.Model):
         verbose_name_plural = "Пользователи"
         ordering = ["registered_at"]
 
+
 class Article(models.Model):
     title = models.CharField(max_length=62, unique=True, null=False, verbose_name="Заголовок")
     slug = models.SlugField(max_length=124, unique=True, null=False, default="")
@@ -37,7 +39,6 @@ class Article(models.Model):
     rated = models.JSONField(default=dict, blank=True, verbose_name="Поставленные оценки")
     comments = models.JSONField(default=dict, blank=False, verbose_name="Комментарии")
 
-
     def __str__(self):
         return self.title
 
@@ -45,6 +46,7 @@ class Article(models.Model):
         verbose_name = "Статья"
         verbose_name_plural = "Статьи"
         ordering = ["-created_at"]
+
 
 class Post(models.Model):
     title = models.CharField(max_length=126, null=False, verbose_name="Заголовок")
@@ -58,7 +60,6 @@ class Post(models.Model):
     hidden = models.BooleanField(default=False)
     answers = models.JSONField(default=dict, blank=True, verbose_name="Ответы")
     comments = models.JSONField(default=dict, blank=False, verbose_name="Комментарии")
-
 
     def __str__(self):
         return self.title
